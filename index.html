@@ -184,15 +184,15 @@
   }
   /* ---- card character decoration ---------------------------------------- */
   .mod__char{
-    position:absolute;bottom:14px;right:14px;
-    width:clamp(52px,10vw,80px);height:auto;
+    position:absolute;bottom:0;right:10px;
+    width:clamp(100px,38%,160px);height:auto;
     image-rendering:pixelated;image-rendering:crisp-edges;
     animation:float 4.2s ease-in-out infinite;
-    pointer-events:none;opacity:.92;
+    pointer-events:none;
   }
   @keyframes float{
     0%,100%{transform:translateY(0)}
-    50%{transform:translateY(-8px)}
+    50%{transform:translateY(-10px)}
   }
 
   @media (prefers-reduced-motion:reduce){
