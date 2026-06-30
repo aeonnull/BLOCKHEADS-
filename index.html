@@ -182,26 +182,23 @@
     .mods{grid-template-columns:repeat(2,1fr)}
     .hero__copy{padding:34px 22px 52px}
   }
-  /* ---- character strip -------------------------------------------------- */
-  .chars{
-    display:flex;justify-content:center;align-items:flex-end;
-    gap:clamp(24px,6vw,64px);padding:36px 22px 8px;
-  }
-  .char{
-    width:clamp(72px,16vw,130px);height:auto;
+  /* ---- card character decoration ---------------------------------------- */
+  .mod__char{
+    position:absolute;bottom:14px;right:14px;
+    width:clamp(52px,10vw,80px);height:auto;
     image-rendering:pixelated;image-rendering:crisp-edges;
     animation:float 4.2s ease-in-out infinite;
+    pointer-events:none;opacity:.92;
   }
-  .char:nth-child(2){animation-delay:1.8s}
   @keyframes float{
     0%,100%{transform:translateY(0)}
-    50%{transform:translateY(-12px)}
+    50%{transform:translateY(-8px)}
   }
 
   @media (prefers-reduced-motion:reduce){
     .hero__word{animation:none}
     a.mod:hover{transform:none}
-    .char{animation:none}
+    .mod__char{animation:none}
   }
 
   /* hero is now the artist's banner, full-bleed on black */
@@ -217,12 +214,6 @@
   <div class="topbar">
     <span class="topbar__name">BLOCKHEADS</span>
     <span class="topbar__meta">3,333 / Bitcoin Ordinals</span>
-  </div>
-
-  <!-- ========================= CHARACTERS ========================= -->
-  <div class="chars">
-    <img class="char" src="sunrise-transparent.gif" alt="Blockhead character" loading="lazy">
-    <img class="char" src="popcorn-transparent.gif" alt="Blockhead popcorn" loading="lazy">
   </div>
 
   <!-- ========================= HERO ========================= -->
@@ -284,6 +275,7 @@
           <h3 class="mod__title">Marketplace</h3>
           <p class="mod__desc">Floor, listings, offers and sales — live on ord.net.</p>
           <span class="mod__foot mod__open">View on ord.net <span class="arrow">&#8599;</span></span>
+          <img class="mod__char" src="sunrise-transparent.gif" alt="" aria-hidden="true">
         </a>
 
         <!-- OPEN : nscribed (Xverse gating planned for later) -->
@@ -301,6 +293,7 @@
           <p class="mod__desc">On-chain arcade runner. Climb the leaderboard, stack blocks.</p>
           <span class="mod__foot"><span class="lock">&#9632;</span> Holder access</span>
           <span class="note">Wallet verification planned — Xverse</span>
+          <img class="mod__char" src="popcorn-transparent.gif" alt="" aria-hidden="true">
         </div>
 
       </div>
