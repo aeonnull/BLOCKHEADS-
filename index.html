@@ -182,9 +182,26 @@
     .mods{grid-template-columns:repeat(2,1fr)}
     .hero__copy{padding:34px 22px 52px}
   }
+  /* ---- character strip -------------------------------------------------- */
+  .chars{
+    display:flex;justify-content:center;align-items:flex-end;
+    gap:clamp(24px,6vw,64px);padding:36px 22px 8px;
+  }
+  .char{
+    width:clamp(72px,16vw,130px);height:auto;
+    image-rendering:pixelated;image-rendering:crisp-edges;
+    animation:float 4.2s ease-in-out infinite;
+  }
+  .char:nth-child(2){animation-delay:1.8s}
+  @keyframes float{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-12px)}
+  }
+
   @media (prefers-reduced-motion:reduce){
     .hero__word{animation:none}
     a.mod:hover{transform:none}
+    .char{animation:none}
   }
 
   /* hero is now the artist's banner, full-bleed on black */
@@ -200,6 +217,12 @@
   <div class="topbar">
     <span class="topbar__name">BLOCKHEADS</span>
     <span class="topbar__meta">3,333 / Bitcoin Ordinals</span>
+  </div>
+
+  <!-- ========================= CHARACTERS ========================= -->
+  <div class="chars">
+    <img class="char" src="sunrise.gif" alt="Blockhead character" loading="lazy">
+    <img class="char" src="popcorn.gif" alt="Blockhead popcorn" loading="lazy">
   </div>
 
   <!-- ========================= HERO ========================= -->
