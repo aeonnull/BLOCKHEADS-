@@ -223,6 +223,75 @@
     image-rendering:pixelated;image-rendering:crisp-edges;
     pointer-events:none;
   }
+
+  /* ---- wallet / connect -------------------------------------------- */
+  .wallet-btn{
+    background:none;border:1px solid var(--orange);
+    color:var(--orange-lt);font-family:"JetBrains Mono",monospace;
+    font-size:11px;letter-spacing:.14em;text-transform:uppercase;
+    padding:5px 12px;cursor:pointer;border-radius:2px;
+    transition:border-color .15s,color .15s;
+  }
+  .wallet-btn:hover{border-color:var(--orange-lt);color:var(--warm-white)}
+  .wallet-addr{
+    display:flex;align-items:center;gap:10px;
+    font-size:11px;letter-spacing:.1em;
+  }
+  .wallet-addr__text{color:var(--warm-white)}
+  .wallet-addr__out{
+    background:none;border:none;color:var(--grey);
+    font-family:"JetBrains Mono",monospace;font-size:10px;
+    letter-spacing:.1em;text-transform:uppercase;cursor:pointer;
+    padding:0;
+  }
+  .wallet-addr__out:hover{color:var(--warm-white)}
+
+  /* ---- connect modal ----------------------------------------------- */
+  .modal{
+    display:none;position:fixed;inset:0;
+    background:rgba(10,10,10,.88);
+    z-index:100;align-items:center;justify-content:center;
+    padding:20px;
+  }
+  .modal.open{display:flex}
+  .modal__box{
+    background:var(--panel);border:1px solid var(--hair);
+    border-radius:4px;padding:36px 28px;max-width:400px;width:100%;
+  }
+  .modal__title{
+    font-family:"Archivo",sans-serif;font-weight:900;
+    font-size:22px;color:var(--warm-white);margin-bottom:8px;
+  }
+  .modal__sub{font-size:13px;color:var(--grey);margin-bottom:24px;line-height:1.7}
+  .modal__btn{
+    display:block;width:100%;padding:13px;
+    background:var(--orange);color:var(--warm-white);
+    border:none;border-radius:3px;
+    font-family:"JetBrains Mono",monospace;font-size:13px;
+    font-weight:700;letter-spacing:.12em;text-transform:uppercase;
+    cursor:pointer;transition:background .15s;
+  }
+  .modal__btn:hover{background:var(--orange-lt)}
+  .modal__btn:disabled{background:var(--grey);cursor:default}
+  .modal__status{
+    margin-top:16px;font-size:12px;color:var(--grey);
+    text-align:center;min-height:20px;line-height:1.5;
+  }
+  .modal__status.err{color:#e05555}
+  .modal__close{
+    display:block;margin-top:20px;text-align:center;
+    font-size:11px;color:var(--grey);cursor:pointer;
+    letter-spacing:.1em;text-transform:uppercase;
+    background:none;border:none;width:100%;
+  }
+  .modal__close:hover{color:var(--warm-white)}
+
+  /* ---- holder-unlocked state --------------------------------------- */
+  .mod__tag--holder{
+    background:var(--orange);color:var(--warm-white) !important;
+    border-color:var(--orange) !important;
+  }
+  .mod--holder{cursor:pointer}
 </style>
 </head>
 <body>
@@ -230,6 +299,7 @@
   <!-- top bar : matches the ord.net collection header -->
   <div class="topbar">
     <span class="topbar__name">BLOCKHEADS</span>
+    <div id="wallet-ui"></div>
     <span class="topbar__meta">3,333 / Bitcoin Ordinals</span>
   </div>
 
@@ -333,28 +403,174 @@
     </footer>
   </div>
 
+<script src="https://unpkg.com/sats-connect@2.8.4/dist/sats-connect.umd.js"></script>
 <script>
-  /* Wallet gating is PLANNED, not built. Locked modules just surface the plan.
-     Later: replace showPlan() with a real Xverse check, then route to the tool. */
-  function showPlan(el){
-    var n = el.querySelector('.note');
-    if(n) n.classList.toggle('show');
-  }
-  document.querySelectorAll('[data-lock]').forEach(function(el){
-    el.addEventListener('click', function(){ showPlan(el); });
-    el.addEventListener('keydown', function(e){
-      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); showPlan(el); }
-    });
-  });
+/* ---- wallet state -------------------------------------------------- */
+// sats-connect UMD exposes window.SatsConnect; fall back to Xverse native
+function getSCRequest() {
+  if (window.SatsConnect && typeof window.SatsConnect.request === 'function')
+    return window.SatsConnect.request.bind(window.SatsConnect);
+  if (window.satsConnect && typeof window.satsConnect.request === 'function')
+    return window.satsConnect.request.bind(window.satsConnect);
+  // Xverse native provider as fallback
+  const xp = window.XverseProviders && window.XverseProviders.BitcoinProvider;
+  if (xp && typeof xp.request === 'function')
+    return (method, params) => xp.request(method, params);
+  return null;
+}
 
-  /* --- wiring point for later -------------------------------------------
-  async function verifyHolder(){
-    // const xverse = window.XverseProviders?.BitcoinProvider;
-    // const { addresses } = await xverse.request('getAddresses', ...);
-    // check ownership of a child of parent #126662567, then unlock.
-    return false;
+var SESSION = { verified: false, address: null };
+
+async function initWallet() {
+  try {
+    var r = await fetch('/api/session');
+    if (r.ok) SESSION = await r.json();
+  } catch(e) {}
+  applySessionUI();
+
+  // Auto-open modal when redirected from /holders
+  if (new URLSearchParams(location.search).get('connect') === '1') {
+    openModal();
+    history.replaceState(null, '', '/');
   }
-  ----------------------------------------------------------------------- */
+}
+
+function applySessionUI() {
+  var ui = document.getElementById('wallet-ui');
+  if (SESSION.verified) {
+    var short = SESSION.address.slice(0,6) + '…' + SESSION.address.slice(-4);
+    ui.innerHTML =
+      '<div class="wallet-addr">' +
+      '<span class="wallet-addr__text">' + short + '</span>' +
+      '<button class="wallet-addr__out" onclick="logout()">disconnect</button>' +
+      '</div>';
+
+    // Unlock holder modules
+    document.querySelectorAll('[data-lock]').forEach(function(el) {
+      el.classList.remove('mod--locked');
+      el.classList.add('mod--holder');
+      var tag = el.querySelector('.mod__tag');
+      if (tag) { tag.className = 'mod__tag mod__tag--holder'; tag.textContent = 'Holders ✓'; }
+      var foot = el.querySelector('.mod__foot');
+      if (foot) foot.innerHTML = 'Enter <span class="arrow">&#8599;</span>';
+      var note = el.querySelector('.note');
+      if (note) note.remove();
+      el.removeAttribute('role');
+      el.removeAttribute('tabindex');
+      el.onclick = function() { location.href = '/holders'; };
+    });
+  } else {
+    ui.innerHTML = '<button class="wallet-btn" onclick="openModal()">Connect Wallet</button>';
+  }
+}
+
+/* ---- modal --------------------------------------------------------- */
+function openModal() {
+  setStatus('');
+  var btn = document.getElementById('modal-btn');
+  if (btn) btn.disabled = false;
+  document.getElementById('connect-modal').classList.add('open');
+}
+function closeModal() {
+  document.getElementById('connect-modal').classList.remove('open');
+}
+
+async function connectWallet() {
+  var scRequest = getSCRequest();
+  if (!scRequest) {
+    setStatus('Xverse not detected — install the Xverse browser extension first', true);
+    return;
+  }
+  var btn = document.getElementById('modal-btn');
+  btn.disabled = true;
+
+  try {
+    // 1. Get ordinals address from wallet
+    setStatus('Requesting wallet access…');
+    var accResp = await scRequest('getAccounts', {
+      purposes: ['ordinals'],
+      message: 'Connect to BLOCKHEADS to verify holder status'
+    });
+    if (accResp.status !== 'success')
+      throw new Error((accResp.error && accResp.error.message) || 'Connection declined');
+
+    var ordAcc = (accResp.result || []).find(function(a) {
+      return a.purpose === 'ordinals' && a.address && a.address.startsWith('bc1p');
+    });
+    if (!ordAcc)
+      throw new Error('No Ordinals address found (bc1p…). Check Xverse settings.');
+    var address = ordAcc.address;
+
+    // 2. Fetch nonce from server
+    setStatus('Getting nonce…');
+    var nonceResp = await fetch('/api/nonce');
+    if (!nonceResp.ok) throw new Error('Failed to get nonce');
+    var nonceData = await nonceResp.json();
+    var nonce = nonceData.nonce;
+    // Extract the random ID part (between ":" and ".")
+    var nonceId = nonce.split(':')[1] && nonce.split(':')[1].split('.')[0];
+    if (!nonceId) throw new Error('Invalid nonce from server');
+
+    // 3. Sign message
+    var iso = new Date().toISOString();
+    var message = 'Verify BLOCKHEADS ownership on blockheadsbtc.xyz\nNonce: ' + nonceId + '\nTime: ' + iso;
+    setStatus('Sign the message in Xverse…');
+    var signResp = await scRequest('signMessage', { address: address, message: message });
+    if (signResp.status !== 'success')
+      throw new Error((signResp.error && signResp.error.message) || 'Signing declined');
+    var signature = signResp.result.signature;
+
+    // 4. Server-side verification
+    setStatus('Verifying on-chain ownership…');
+    var verifyResp = await fetch('/api/verify', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ address: address, message: message, signature: signature, nonce: nonce })
+    });
+    var verifyJson = await verifyResp.json();
+    if (!verifyResp.ok) throw new Error(verifyJson.error || 'Verification failed');
+
+    setStatus('Verified! Loading…');
+    location.reload();
+  } catch(err) {
+    setStatus(err.message, true);
+    btn.disabled = false;
+  }
+}
+
+async function logout() {
+  await fetch('/api/logout', { method: 'POST' });
+  location.reload();
+}
+
+function setStatus(msg, isErr) {
+  var el = document.getElementById('modal-status');
+  if (!el) return;
+  el.textContent = msg;
+  el.className = 'modal__status' + (isErr ? ' err' : '');
+}
+
+// Locked modules: open connect modal when clicked (while not verified)
+document.querySelectorAll('[data-lock]').forEach(function(el) {
+  el.addEventListener('click', openModal);
+  el.addEventListener('keydown', function(e) {
+    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openModal(); }
+  });
+});
+
+initWallet();
 </script>
+
+<!-- ========================= CONNECT MODAL ========================= -->
+<div class="modal" id="connect-modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+  <div class="modal__box">
+    <h2 class="modal__title" id="modal-title">Holder Verification</h2>
+    <p class="modal__sub">Connect your Xverse wallet to verify that you hold a BLOCKHEADS. Your address is read-only &mdash; no transactions, no seed phrase.</p>
+    <button class="modal__btn" id="modal-btn" onclick="connectWallet()">Connect Xverse</button>
+    <div class="modal__status" id="modal-status"></div>
+    <button class="modal__close" onclick="closeModal()">Cancel</button>
+  </div>
+</div>
+
 </body>
 </html>

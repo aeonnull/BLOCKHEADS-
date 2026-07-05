@@ -1,0 +1,8 @@
+{
+  "name": "blockheads",
+  "version": "1.0.0",
+  "private": true,
+  "dependencies": {
+    "bip322-js": "^2.0.0"
+  }
+}
