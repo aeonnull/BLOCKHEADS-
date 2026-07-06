@@ -59,50 +59,58 @@ function issueJWT(address, secret) {
   return `${header}.${payload}.${sig}`;
 }
 
-async function hiroFetch(url, headers) {
-  const controller = new AbortController();
-  const timer = setTimeout(() => controller.abort(), 12000);
-  try {
-    const r = await fetch(url, { headers, signal: controller.signal });
-    clearTimeout(timer);
-    return r;
-  } catch (e) {
-    clearTimeout(timer);
-    throw e;
-  }
+function hiroHeaders() {
+  const h = { 'Accept': 'application/json' };
+  const key = process.env.HIRO_API_KEY;
+  if (key) h['x-api-key'] = key;
+  return h;
+}
+
+async function hiroGet(url) {
+  const r = await fetch(url, { headers: hiroHeaders() });
+  if (r.status === 429) throw new Error('Hiro rate limit — add HIRO_API_KEY env var');
+  return r;
 }
 
 async function holdsBlockhead(address) {
-  const headers = { 'Accept': 'application/json' };
-  const apiKey = process.env.HIRO_API_KEY;
-  if (apiKey) headers['x-api-key'] = apiKey;
-
-  // First try: filter by parent inscription ID
+  // Strategy 1: children endpoint — check if parent has any child at this address
   try {
-    const url = `${HIRO_BASE}/inscriptions?address=${encodeURIComponent(address)}&parent=${encodeURIComponent(PARENT_ID)}&limit=1`;
-    const r = await hiroFetch(url, headers);
+    const parentNum = '126662567'; // inscription number for faster lookup
+    const url = `${HIRO_BASE}/inscriptions/${encodeURIComponent(PARENT_ID)}/children?address=${encodeURIComponent(address)}&limit=1`;
+    const r = await hiroGet(url);
     if (r.ok) {
       const d = await r.json();
-      if (typeof d.total === 'number' && d.total > 0) return true;
-      // If total === 0 with parent filter, trust the filter
-      if (typeof d.total === 'number') return false;
+      if (typeof d.total === 'number') return d.total > 0;
     }
-    // If parent param caused a 4xx, fall through to paginate
   } catch (e) {
-    console.error('Hiro parent-filter attempt failed:', e.message);
+    console.error('Hiro children endpoint:', e.message);
+    throw e; // rethrow rate limit errors
   }
 
-  // Fallback: paginate all inscriptions and check parent field
-  return paginateCheck(address, headers);
+  // Strategy 2: inscriptions list filtered by parent param
+  try {
+    const url = `${HIRO_BASE}/inscriptions?address=${encodeURIComponent(address)}&parent=${encodeURIComponent(PARENT_ID)}&limit=1`;
+    const r = await hiroGet(url);
+    if (r.ok) {
+      const d = await r.json();
+      if (typeof d.total === 'number') return d.total > 0;
+    }
+  } catch (e) {
+    console.error('Hiro parent filter:', e.message);
+    throw e;
+  }
+
+  // Strategy 3: paginate address inscriptions and match parent field
+  return paginateCheck(address);
 }
 
-async function paginateCheck(address, headers) {
+async function paginateCheck(address) {
   const limit = 60;
   let offset  = 0;
   for (let page = 0; page < 20; page++) {
     const url = `${HIRO_BASE}/inscriptions?address=${encodeURIComponent(address)}&limit=${limit}&offset=${offset}`;
-    const r = await hiroFetch(url, headers);
-    if (!r.ok) throw new Error(`Hiro API responded with ${r.status}`);
+    const r = await hiroGet(url);
+    if (!r.ok) throw new Error(`Hiro API ${r.status}`);
     const d = await r.json();
     for (const item of (d.results || [])) {
       if (item.parent === PARENT_ID) return true;
