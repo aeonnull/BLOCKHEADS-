@@ -1,6 +1,13 @@
 'use strict';
 const crypto = require('crypto');
 
+function issueHandoffToken(address, secret) {
+  const exp = Math.floor(Date.now() / 1000) + 15 * 60; // 15 min
+  const payload = `${address}:${exp}`;
+  const mac = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+  return encodeURIComponent(`${payload}.${mac}`);
+}
+
 function parseCookies(header) {
   const out = {};
   for (const part of (header || '').split(';')) {
@@ -29,7 +36,7 @@ function verifyJWT(token, secret) {
   } catch { return null; }
 }
 
-function holdersHTML(address) {
+function holdersHTML(address, nscribedUrl) {
   const short = address.slice(0, 6) + '…' + address.slice(-4);
   return `<!DOCTYPE html>
 <html lang="en">
@@ -97,7 +104,7 @@ a:hover{color:var(--warm-white)}
     <span class="card__tag card__tag--live">Live</span>
     <div class="card__title">nscribed</div>
     <p class="card__desc">One link for everything you’ve inscribed — a profile home for what you make and collect on Bitcoin.</p>
-    <a class="card__link card__link--open" href="https://nscribed.xyz" target="_blank" rel="noopener">
+    <a class="card__link card__link--open" href="${nscribedUrl}" target="_blank" rel="noopener">
       Go to nscribed <span class="arrow">&#8599;</span>
     </a>
   </div>
@@ -143,7 +150,12 @@ module.exports = function handler(req, res) {
     return;
   }
 
+  const ssoSecret = process.env.BLOCKHEADS_SSO_SECRET;
+  const nscribedUrl = ssoSecret
+    ? `https://nscribed.xyz/?bh_token=${issueHandoffToken(session.address, ssoSecret)}`
+    : 'https://nscribed.xyz';
+
   res.setHeader('Content-Type', 'text/html; charset=utf-8');
   res.setHeader('Cache-Control', 'no-store, private');
-  res.status(200).end(holdersHTML(session.address));
+  res.status(200).end(holdersHTML(session.address, nscribedUrl));
 };
