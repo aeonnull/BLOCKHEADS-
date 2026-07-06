@@ -10,27 +10,26 @@ module.exports = async function handler(req, res) {
 
   const results = {};
 
-  // Test 1: basic inscriptions endpoint
-  try {
-    const url = `${HIRO_BASE}/inscriptions?limit=1`;
-    const r = await fetch(url, { headers });
-    results.basic = { status: r.status, ok: r.ok };
-    if (r.ok) results.basic.body = await r.json();
-    else results.basic.text = await r.text();
-  } catch (e) {
-    results.basic = { error: e.message };
-  }
+  const testUrl = async (label, url) => {
+    try {
+      const r = await fetch(url, { headers, signal: AbortSignal.timeout(8000) });
+      const text = await r.text();
+      let body;
+      try { body = JSON.parse(text); } catch { body = text.slice(0, 200); }
+      results[label] = { status: r.status, ok: r.ok, body };
+    } catch (e) {
+      results[label] = { error: e.message };
+    }
+  };
 
-  // Test 2: children endpoint
-  try {
-    const url = `${HIRO_BASE}/inscriptions/${encodeURIComponent(PARENT_ID)}/children?limit=1`;
-    const r = await fetch(url, { headers });
-    results.children = { status: r.status, ok: r.ok };
-    if (r.ok) results.children.body = await r.json();
-    else results.children.text = await r.text();
-  } catch (e) {
-    results.children = { error: e.message };
-  }
+  await testUrl('hiro_v1_basic', `${HIRO_BASE}/inscriptions?limit=1`);
+  await testUrl('hiro_v2_basic', 'https://api.hiro.so/ordinals/v2/inscriptions?limit=1');
+  await testUrl('hiro_v1_children', `${HIRO_BASE}/inscriptions/${encodeURIComponent(PARENT_ID)}/children?limit=1`);
+  // Magic Eden ordinals API
+  await testUrl('magiceden_collection', `https://api-mainnet.magiceden.dev/v2/ord/btc/tokens?limit=1&collectionSymbol=blockheads`);
+  // Unisat — check address inscriptions
+  const testAddr = 'bc1p5cyxnuxmeuwuvkwfem96lqzszd02n6xdcjrs20cac6yqjjwudpxqkedrcr'; // sample taproot addr
+  await testUrl('unisat_address', `https://open-api.unisat.io/v1/indexer/address/${testAddr}/inscription-utxo-data?cursor=0&size=1`);
 
   res.status(200).json({
     keyPresent: !!key,
