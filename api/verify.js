@@ -59,30 +59,50 @@ function issueJWT(address, secret) {
   return `${header}.${payload}.${sig}`;
 }
 
+async function hiroFetch(url, headers) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort(), 12000);
+  try {
+    const r = await fetch(url, { headers, signal: controller.signal });
+    clearTimeout(timer);
+    return r;
+  } catch (e) {
+    clearTimeout(timer);
+    throw e;
+  }
+}
+
 async function holdsBlockhead(address) {
-  const headers = {};
+  const headers = { 'Accept': 'application/json' };
   const apiKey = process.env.HIRO_API_KEY;
   if (apiKey) headers['x-api-key'] = apiKey;
 
-  // Try with parent= query param (Hiro supports it)
-  const url = `${HIRO_BASE}/inscriptions?address=${encodeURIComponent(address)}&parent=${encodeURIComponent(PARENT_ID)}&limit=1`;
-  const r = await fetch(url, { headers, signal: AbortSignal.timeout(8000) });
-  if (!r.ok) throw new Error(`Hiro API ${r.status}`);
-  const d = await r.json();
+  // First try: filter by parent inscription ID
+  try {
+    const url = `${HIRO_BASE}/inscriptions?address=${encodeURIComponent(address)}&parent=${encodeURIComponent(PARENT_ID)}&limit=1`;
+    const r = await hiroFetch(url, headers);
+    if (r.ok) {
+      const d = await r.json();
+      if (typeof d.total === 'number' && d.total > 0) return true;
+      // If total === 0 with parent filter, trust the filter
+      if (typeof d.total === 'number') return false;
+    }
+    // If parent param caused a 4xx, fall through to paginate
+  } catch (e) {
+    console.error('Hiro parent-filter attempt failed:', e.message);
+  }
 
-  if (typeof d.total === 'number') return d.total > 0;
-
-  // Fallback: paginate and filter locally
+  // Fallback: paginate all inscriptions and check parent field
   return paginateCheck(address, headers);
 }
 
 async function paginateCheck(address, headers) {
   const limit = 60;
   let offset  = 0;
-  for (let page = 0; page < 20; page++) { // max 1 200 inscriptions
+  for (let page = 0; page < 20; page++) {
     const url = `${HIRO_BASE}/inscriptions?address=${encodeURIComponent(address)}&limit=${limit}&offset=${offset}`;
-    const r = await fetch(url, { headers, signal: AbortSignal.timeout(8000) });
-    if (!r.ok) throw new Error(`Hiro API ${r.status}`);
+    const r = await hiroFetch(url, headers);
+    if (!r.ok) throw new Error(`Hiro API responded with ${r.status}`);
     const d = await r.json();
     for (const item of (d.results || [])) {
       if (item.parent === PARENT_ID) return true;
@@ -149,11 +169,11 @@ module.exports = async function handler(req, res) {
     holder = await holdsBlockhead(address);
   } catch (err) {
     console.error('Hiro API:', err.message);
-    return res.status(503).json({ error: 'Kunde inte verifiera just nu — försök igen' });
+    return res.status(503).json({ error: 'Could not verify right now — please try again' });
   }
 
   if (!holder) {
-    return res.status(403).json({ error: 'Ingen BLOCKHEADS hittades på den adressen' });
+    return res.status(403).json({ error: 'No BLOCKHEADS found at that address' });
   }
 
   // 5. Issue signed HttpOnly session cookie
