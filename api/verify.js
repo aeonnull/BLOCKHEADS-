@@ -5,11 +5,14 @@ const NONCE_MAX_AGE = 10 * 60 * 1000; // 10 min
 const SESSION_TTL   = 24 * 60 * 60;   // 24 h in seconds
 const PARENT_ID = process.env.BLOCKHEADS_PARENT_ID
   || '3333c06aab0354040a6a2864e75dbc631524a9d63a4b41fa9930d8a7dcc9f5c4i0';
-const HIRO_BASE = 'https://api.hiro.so/ordinals/v1';
 
-// In-memory sets; reset on cold start — acceptable for low traffic MVP
 const USED_NONCES = new Set();
 const RATE = new Map();
+
+// Module-level cache of BLOCKHEADS UTXO outputs (persists across warm requests)
+let BLOCKHEADS_OUTPUTS = null;
+let CACHE_TS = 0;
+const CACHE_TTL = 30 * 60 * 1000; // 30 min
 
 function rateCheck(ip) {
   const now = Date.now();
@@ -21,7 +24,6 @@ function rateCheck(ip) {
 }
 
 function parseNonceToken(token) {
-  // format: "timestamp:randomId.hmac"
   const lastDot = token.lastIndexOf('.');
   if (lastDot < 0) return null;
   const payload = token.slice(0, lastDot);
@@ -46,7 +48,7 @@ function verifyNonce(token, secret) {
   if (isNaN(ts) || Date.now() - ts > NONCE_MAX_AGE) return null;
   if (USED_NONCES.has(token)) return null;
 
-  return parts; // { payload, mac, id }
+  return parts;
 }
 
 function issueJWT(address, secret) {
@@ -59,64 +61,63 @@ function issueJWT(address, secret) {
   return `${header}.${payload}.${sig}`;
 }
 
-function hiroHeaders() {
-  const h = { 'Accept': 'application/json' };
-  const key = process.env.HIRO_API_KEY;
-  if (key) h['x-api-key'] = key;
-  return h;
+async function fetchOrdinalsPage(page) {
+  const url = `https://ordinals.com/r/children/${encodeURIComponent(PARENT_ID)}/inscriptions/${page}`;
+  const r = await fetch(url, {
+    headers: { Accept: 'application/json' },
+    signal: AbortSignal.timeout(12000)
+  });
+  if (!r.ok) throw new Error(`ordinals.com page ${page}: ${r.status}`);
+  return r.json();
 }
 
-async function hiroGet(url) {
-  const r = await fetch(url, { headers: hiroHeaders() });
-  if (r.status === 429) throw new Error('Hiro rate limit — add HIRO_API_KEY env var');
-  return r;
+async function buildBlockheadsCache() {
+  const outputs = new Set();
+
+  // Fetch first page
+  const first = await fetchOrdinalsPage(0);
+  for (const c of (first.children || [])) outputs.add(c.output);
+
+  if (first.more) {
+    // Fetch remaining pages in parallel batches of 8
+    const BATCH = 8;
+    let page = 1;
+    let hasMore = true;
+
+    while (hasMore && page < 50) {
+      const pageNums = Array.from({ length: BATCH }, (_, i) => page + i);
+      const results = await Promise.all(pageNums.map(p => fetchOrdinalsPage(p)));
+      for (const d of results) {
+        for (const c of (d.children || [])) outputs.add(c.output);
+        if (!d.more) { hasMore = false; break; }
+      }
+      page += BATCH;
+    }
+  }
+
+  BLOCKHEADS_OUTPUTS = outputs;
+  CACHE_TS = Date.now();
+  return outputs;
 }
 
 async function holdsBlockhead(address) {
-  // Strategy 1: children endpoint — check if parent has any child at this address
-  try {
-    const parentNum = '126662567'; // inscription number for faster lookup
-    const url = `${HIRO_BASE}/inscriptions/${encodeURIComponent(PARENT_ID)}/children?address=${encodeURIComponent(address)}&limit=1`;
-    const r = await hiroGet(url);
-    if (r.ok) {
-      const d = await r.json();
-      if (typeof d.total === 'number') return d.total > 0;
-    }
-  } catch (e) {
-    console.error('Hiro children endpoint:', e.message);
-    throw e; // rethrow rate limit errors
+  // 1. Get current UTXOs for this address from mempool.space
+  const mempoolResp = await fetch(
+    `https://mempool.space/api/address/${encodeURIComponent(address)}/utxo`,
+    { signal: AbortSignal.timeout(8000) }
+  );
+  if (!mempoolResp.ok) throw new Error(`mempool.space: ${mempoolResp.status}`);
+  const utxos = await mempoolResp.json();
+  if (!Array.isArray(utxos) || utxos.length === 0) return false;
+
+  // 2. Ensure BLOCKHEADS output cache is fresh
+  if (!BLOCKHEADS_OUTPUTS || Date.now() - CACHE_TS > CACHE_TTL) {
+    await buildBlockheadsCache();
   }
 
-  // Strategy 2: inscriptions list filtered by parent param
-  try {
-    const url = `${HIRO_BASE}/inscriptions?address=${encodeURIComponent(address)}&parent=${encodeURIComponent(PARENT_ID)}&limit=1`;
-    const r = await hiroGet(url);
-    if (r.ok) {
-      const d = await r.json();
-      if (typeof d.total === 'number') return d.total > 0;
-    }
-  } catch (e) {
-    console.error('Hiro parent filter:', e.message);
-    throw e;
-  }
-
-  // Strategy 3: paginate address inscriptions and match parent field
-  return paginateCheck(address);
-}
-
-async function paginateCheck(address) {
-  const limit = 60;
-  let offset  = 0;
-  for (let page = 0; page < 20; page++) {
-    const url = `${HIRO_BASE}/inscriptions?address=${encodeURIComponent(address)}&limit=${limit}&offset=${offset}`;
-    const r = await hiroGet(url);
-    if (!r.ok) throw new Error(`Hiro API ${r.status}`);
-    const d = await r.json();
-    for (const item of (d.results || [])) {
-      if (item.parent === PARENT_ID) return true;
-    }
-    if ((d.results || []).length < limit) break;
-    offset += limit;
+  // 3. Check if any user UTXO matches a BLOCKHEADS output
+  for (const utxo of utxos) {
+    if (BLOCKHEADS_OUTPUTS.has(`${utxo.txid}:${utxo.vout}`)) return true;
   }
   return false;
 }
@@ -131,7 +132,6 @@ module.exports = async function handler(req, res) {
   const ip = (req.headers['x-forwarded-for'] || '').split(',')[0].trim() || 'anon';
   if (!rateCheck(ip)) return res.status(429).json({ error: 'Too many requests' });
 
-  // Parse body (Vercel parses JSON automatically, but guard just in case)
   let body = req.body;
   if (typeof body === 'string') {
     try { body = JSON.parse(body); } catch { return res.status(400).json({ error: 'Invalid JSON' }); }
@@ -141,23 +141,22 @@ module.exports = async function handler(req, res) {
     return res.status(400).json({ error: 'Missing fields' });
   }
 
-  // Only Ordinals (taproot) addresses
   if (!address.startsWith('bc1p')) {
     return res.status(400).json({
       error: 'Please use your Ordinals address (starts with bc1p)'
     });
   }
 
-  // 1. Verify nonce token
+  // 1. Verify nonce
   const nonceData = verifyNonce(nonce, nonceSecret);
   if (!nonceData) return res.status(400).json({ error: 'Invalid or expired nonce' });
 
-  // 2. Signed message must contain the nonce ID
+  // 2. Message must contain nonce ID
   if (!message.includes(nonceData.id)) {
     return res.status(400).json({ error: 'Message does not match nonce' });
   }
 
-  // 3. BIP-322 signature verification — server-side only
+  // 3. BIP-322 signature verification
   try {
     const { Verifier } = require('bip322-js');
     const valid = Verifier.verifySignature(address, message, signature);
@@ -167,16 +166,15 @@ module.exports = async function handler(req, res) {
     return res.status(401).json({ error: 'Signature verification failed' });
   }
 
-  // Mark nonce as consumed
   USED_NONCES.add(nonce);
   if (USED_NONCES.size > 10_000) USED_NONCES.clear();
 
-  // 4. Check inscription ownership via Hiro Ordinals API
+  // 4. Check BLOCKHEADS ownership via ordinals.com + mempool.space
   let holder = false;
   try {
     holder = await holdsBlockhead(address);
   } catch (err) {
-    console.error('Hiro API:', err.message);
+    console.error('Ownership check:', err.message);
     return res.status(503).json({ error: 'Could not verify right now — please try again' });
   }
 
@@ -184,7 +182,7 @@ module.exports = async function handler(req, res) {
     return res.status(403).json({ error: 'No BLOCKHEADS found at that address' });
   }
 
-  // 5. Issue signed HttpOnly session cookie
+  // 5. Issue session cookie
   const token = issueJWT(address, jwtSecret);
   res.setHeader('Set-Cookie',
     `bh_session=${token}; HttpOnly; Secure; SameSite=Strict; Max-Age=${SESSION_TTL}; Path=/`
