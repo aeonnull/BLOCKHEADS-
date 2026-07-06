@@ -10,33 +10,42 @@ module.exports = async function handler(req, res) {
     try {
       const r = await fetch(url, {
         headers: { 'Accept': 'application/json', ...headers },
-        signal: AbortSignal.timeout(8000)
+        signal: AbortSignal.timeout(10000)
       });
       const text = await r.text();
       let body;
-      try { body = JSON.parse(text); } catch { body = text.slice(0, 300); }
+      try { body = JSON.parse(text); } catch { body = text.slice(0, 200); }
       results[label] = { status: r.status, ok: r.ok, body };
     } catch (e) {
       results[label] = { error: e.message };
     }
   };
 
-  // Xverse backend API
-  await testUrl('xverse_v1', `https://api.xverse.app/v1/address/${TEST_ADDR}/ordinals?limit=1&offset=0`);
-  await testUrl('xverse_v2', `https://api.xverse.app/v2/address/${TEST_ADDR}/ordinals?limit=1`);
-  await testUrl('xverse_inscriptions', `https://api.xverse.app/v1/address/${TEST_ADDR}/inscriptions?limit=1`);
+  // Test ordinals.com children — count total and show first id
+  try {
+    const r = await fetch(
+      `https://ordinals.com/r/children/${encodeURIComponent(PARENT_ID)}/inscriptions`,
+      { headers: { Accept: 'application/json' }, signal: AbortSignal.timeout(15000) }
+    );
+    if (r.ok) {
+      const d = await r.json();
+      const kids = d.children || [];
+      results.ordinals_children = {
+        status: 200, ok: true,
+        total: kids.length,
+        firstId: kids[0]?.id,
+        firstOutput: kids[0]?.output,
+        more: d.more
+      };
+    } else {
+      results.ordinals_children = { status: r.status, ok: false };
+    }
+  } catch (e) {
+    results.ordinals_children = { error: e.message };
+  }
 
-  // GeniiData
-  await testUrl('geniidata', `https://api.geniidata.com/api/1/ordinals/inscriptions?address=${TEST_ADDR}&limit=1`);
+  // Test mempool.space UTXO endpoint
+  await testUrl('mempool_utxo', `https://mempool.space/api/address/${TEST_ADDR}/utxo`);
 
-  // Ordinals.com recursive API (children of parent)
-  await testUrl('ordinals_children', `https://ordinals.com/r/children/${encodeURIComponent(PARENT_ID)}/inscriptions`);
-  await testUrl('ordinals_children_0', `https://ordinals.com/r/children/${encodeURIComponent(PARENT_ID)}/inscriptions/0`);
-
-  // ord.net
-  await testUrl('ordnet_inscription', `https://ord.net/api/inscription/${encodeURIComponent(PARENT_ID)}`);
-  await testUrl('ordnet_address', `https://ord.net/api/address/${TEST_ADDR}`);
-  await testUrl('ordnet_children', `https://ord.net/api/inscription/${encodeURIComponent(PARENT_ID)}/children?limit=1`);
-
-  res.status(200).json({ parentId: PARENT_ID, testAddr: TEST_ADDR, results });
+  res.status(200).json({ parentId: PARENT_ID, results });
 };
