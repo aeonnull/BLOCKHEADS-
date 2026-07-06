@@ -487,39 +487,72 @@ function closeModal() {
   document.getElementById('connect-modal').classList.remove('open');
 }
 
+/* Parse accounts from any Xverse/sats-connect response format */
+function parseAccounts(resp) {
+  if (!resp) return null;
+  if (resp.status === 'success') return Array.isArray(resp.result) ? resp.result : [];
+  if (resp.status === 'error') return null;
+  if (Array.isArray(resp)) return resp;
+  if (resp.result) {
+    var r = resp.result;
+    if (Array.isArray(r)) return r;
+    if (r.addresses) return r.addresses; // old Xverse: { result: { addresses: [...] } }
+  }
+  return null;
+}
+
+/* Find bc1p ordinals address from accounts array */
+function findOrdAddress(accounts) {
+  if (!accounts || !accounts.length) return null;
+  for (var i = 0; i < accounts.length; i++) {
+    var a = accounts[i];
+    var addr = a.address || a.addr;
+    if (addr && addr.startsWith('bc1p') && a.purpose === 'ordinals') return addr;
+  }
+  for (var i = 0; i < accounts.length; i++) {
+    var addr = accounts[i].address || accounts[i].addr;
+    if (addr && addr.startsWith('bc1p')) return addr;
+  }
+  return null;
+}
+
+/* Parse signature from any response format */
+function parseSignature(resp) {
+  if (!resp) return null;
+  if (resp.status === 'success' && resp.result) return resp.result.signature || resp.result;
+  if (resp.signature) return resp.signature;
+  if (resp.result && resp.result.signature) return resp.result.signature;
+  if (typeof resp === 'string' && resp.length > 20) return resp;
+  return null;
+}
+
 async function connectWallet() {
   var scRequest = getSCRequest();
   if (!scRequest) {
-    setStatus('Xverse not detected — install the Xverse browser extension first', true);
+    setStatus('Öppna sidan i Xverse-webbläsaren eller installera Xverse-tillägget', true);
     return;
   }
   var btn = document.getElementById('modal-btn');
   btn.disabled = true;
 
   try {
-    // 1. Get ordinals address from wallet
+    // 1. Get ordinals address
     setStatus('Requesting wallet access…');
     var accResp = await scRequest('getAccounts', {
-      purposes: ['ordinals'],
+      purposes: ['ordinals', 'payment'],
       message: 'Connect to BLOCKHEADS to verify holder status'
     });
-    if (accResp.status !== 'success')
-      throw new Error((accResp.error && accResp.error.message) || 'Connection declined');
+    var accounts = parseAccounts(accResp);
+    if (accounts === null) throw new Error('Connection declined — try again');
+    var address = findOrdAddress(accounts);
+    if (!address) throw new Error('No Ordinals address (bc1p…) found. Check Xverse settings.');
 
-    var ordAcc = (accResp.result || []).find(function(a) {
-      return a.purpose === 'ordinals' && a.address && a.address.startsWith('bc1p');
-    });
-    if (!ordAcc)
-      throw new Error('No Ordinals address found (bc1p…). Check Xverse settings.');
-    var address = ordAcc.address;
-
-    // 2. Fetch nonce from server
+    // 2. Fetch nonce
     setStatus('Getting nonce…');
     var nonceResp = await fetch('/api/nonce');
-    if (!nonceResp.ok) throw new Error('Failed to get nonce');
+    if (!nonceResp.ok) throw new Error('Server error, please try again');
     var nonceData = await nonceResp.json();
     var nonce = nonceData.nonce;
-    // Extract the random ID part (between ":" and ".")
     var nonceId = nonce.split(':')[1] && nonce.split(':')[1].split('.')[0];
     if (!nonceId) throw new Error('Invalid nonce from server');
 
@@ -528,9 +561,8 @@ async function connectWallet() {
     var message = 'Verify BLOCKHEADS ownership on blockheadsbtc.xyz\nNonce: ' + nonceId + '\nTime: ' + iso;
     setStatus('Sign the message in Xverse…');
     var signResp = await scRequest('signMessage', { address: address, message: message });
-    if (signResp.status !== 'success')
-      throw new Error((signResp.error && signResp.error.message) || 'Signing declined');
-    var signature = signResp.result.signature;
+    var signature = parseSignature(signResp);
+    if (!signature) throw new Error('Signing declined or failed — try again');
 
     // 4. Server-side verification
     setStatus('Verifying on-chain ownership…');
