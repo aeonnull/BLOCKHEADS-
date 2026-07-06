@@ -408,14 +408,26 @@
 /* ---- wallet state -------------------------------------------------- */
 // sats-connect UMD exposes window.SatsConnect; fall back to Xverse native
 function getSCRequest() {
-  if (window.SatsConnect && typeof window.SatsConnect.request === 'function')
-    return window.SatsConnect.request.bind(window.SatsConnect);
-  if (window.satsConnect && typeof window.satsConnect.request === 'function')
-    return window.satsConnect.request.bind(window.satsConnect);
-  // Xverse native provider as fallback
-  const xp = window.XverseProviders && window.XverseProviders.BitcoinProvider;
-  if (xp && typeof xp.request === 'function')
-    return (method, params) => xp.request(method, params);
+  // Try every known sats-connect UMD export name
+  var sc = window.SatsConnect || window.satsConnect || window['sats-connect'];
+  if (sc && typeof sc.request === 'function')
+    return sc.request.bind(sc);
+  // Xverse in-app browser injects BitcoinProvider directly
+  var xp = (window.XverseProviders && window.XverseProviders.BitcoinProvider)
+         || window.BitcoinProvider;
+  if (xp && typeof xp.request === 'function') {
+    // Wrap native provider to match sats-connect response format
+    return async function(method, params) {
+      try {
+        var result = await xp.request(method, params);
+        // Native provider may return {result:...} or the value directly
+        if (result && result.result !== undefined) result = result.result;
+        return { status: 'success', result: result };
+      } catch(e) {
+        return { status: 'error', error: { message: e.message || 'Request failed' } };
+      }
+    };
+  }
   return null;
 }
 
