@@ -67,7 +67,7 @@ async function fetchOrdinalsPage(page) {
     headers: { Accept: 'application/json' },
     signal: AbortSignal.timeout(12000)
   });
-  if (!r.ok) throw new Error(`ordinals.com page ${page}: ${r.status}`);
+  if (!r.ok) return { children: [], more: false }; // gracefully stop at last page
   return r.json();
 }
 
