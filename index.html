@@ -183,13 +183,17 @@
   .mod--locked{opacity:.62}
   .mod--locked .mod__foot{color:var(--grey)}
   .mod--featured{
+    opacity:1!important;
     border-color:var(--orange);
-    box-shadow:0 0 0 1px var(--orange),0 0 18px rgba(204,64,25,.18);
+    box-shadow:0 0 0 1px var(--orange),0 0 22px rgba(204,64,25,.22);
     animation:border-pulse 2.8s ease-in-out infinite;
   }
+  .mod--featured .mod__tag--lock{color:var(--orange-lt);border-color:var(--orange)}
+  .mod--featured .mod__title{color:var(--warm-white)}
+  .mod--featured .mod__desc{color:#b0a89a}
   @keyframes border-pulse{
-    0%,100%{box-shadow:0 0 0 1px var(--orange),0 0 18px rgba(204,64,25,.18)}
-    50%{box-shadow:0 0 0 1px var(--orange-lt),0 0 30px rgba(232,99,43,.28)}
+    0%,100%{box-shadow:0 0 0 1px var(--orange),0 0 22px rgba(204,64,25,.22)}
+    50%{box-shadow:0 0 0 1px var(--orange-lt),0 0 36px rgba(232,99,43,.34)}
   }
   .lock{color:var(--orange)}
   .mod__open{color:var(--orange-lt)}
