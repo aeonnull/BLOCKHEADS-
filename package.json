@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "dependencies": {
+    "@upstash/redis": "^1.38.0",
     "bip322-js": "^2.0.0"
   }
 }
