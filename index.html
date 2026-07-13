@@ -205,6 +205,41 @@
   }
   .note.show{display:block}
 
+  /* ---- leaderboard ------------------------------------------------------ */
+  .lb{padding:8px 0 4px}
+  .lb__board{
+    border:1px solid var(--hair);background:var(--panel);
+  }
+  .lbrow{
+    display:grid;grid-template-columns:34px 1fr auto;align-items:center;
+    gap:14px;padding:14px 18px;
+    border-bottom:1px solid var(--hair);
+  }
+  .lbrow:last-child{border-bottom:none}
+  .lb__rank{
+    font-family:"Archivo",sans-serif;font-weight:800;font-size:15px;
+    color:var(--grey);text-align:right;
+  }
+  .lb__name{
+    font-family:"JetBrains Mono",monospace;font-size:13px;
+    color:var(--warm-white);letter-spacing:.04em;
+    overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .lb__score{
+    font-family:"Archivo",sans-serif;font-weight:800;font-size:17px;
+    color:var(--warm-white);letter-spacing:.01em;
+    font-variant-numeric:tabular-nums;
+  }
+  /* podium accents */
+  .lbrow--1 .lb__rank,.lbrow--1 .lb__score{color:var(--orange-lt)}
+  .lbrow--1{background:linear-gradient(90deg,rgba(204,64,25,.10),transparent)}
+  .lbrow--2 .lb__rank,.lbrow--3 .lb__rank{color:var(--warm-white)}
+  .lb__empty{
+    padding:26px 18px;text-align:center;color:var(--grey);
+    font-size:12.5px;letter-spacing:.06em;
+  }
+  .lb__loading{opacity:.55}
+
   /* ---- footer ----------------------------------------------------------- */
   footer{
     margin-top:48px;border-top:1px solid var(--hair);
@@ -410,6 +445,17 @@
           <span class="note">Wallet verification planned — Xverse</span>
         </div>
 
+      </div>
+    </section>
+
+    <!-- ========================= LEADERBOARD ========================= -->
+    <section class="sec lb" aria-label="Blockrunner leaderboard">
+      <div class="sec__head">
+        <span class="sec__label">// Leaderboard</span>
+        <span class="sec__count">Blockrunner &middot; top 10</span>
+      </div>
+      <div class="lb__board" id="lb-board">
+        <div class="lb__empty lb__loading" id="lb-status">Loading scores&hellip;</div>
       </div>
     </section>
 
@@ -631,6 +677,44 @@ document.querySelectorAll('[data-lock]').forEach(function(el) {
 });
 
 initWallet();
+
+/* ---- leaderboard (Blockrunner top 10) ------------------------------ */
+(function () {
+  var board = document.getElementById('lb-board');
+  if (!board) return;
+
+  function esc(s) {
+    return String(s).replace(/[<>&"']/g, function (c) {
+      return { '<':'&lt;', '>':'&gt;', '&':'&amp;', '"':'&quot;', "'":'&#39;' }[c];
+    });
+  }
+
+  function render(list) {
+    if (!list || !list.length) {
+      board.innerHTML = '<div class="lb__empty">No runs yet &mdash; be the first to climb.</div>';
+      return;
+    }
+    board.innerHTML = list.slice(0, 10).map(function (e, i) {
+      var rank = i + 1;
+      return '<div class="lbrow lbrow--' + rank + '">' +
+               '<span class="lb__rank">' + rank + '</span>' +
+               '<span class="lb__name">' + esc(e.n || 'ANON') + '</span>' +
+               '<span class="lb__score">' + (Number(e.s) || 0).toLocaleString('en-US') + '</span>' +
+             '</div>';
+    }).join('');
+  }
+
+  function load() {
+    fetch('/api/leaderboard', { headers: { 'Accept': 'application/json' } })
+      .then(function (r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function (d) { render(d && d.leaderboard); })
+      .catch(function () {
+        board.innerHTML = '<div class="lb__empty">Leaderboard unavailable right now.</div>';
+      });
+  }
+
+  load();
+})();
 </script>
 
 <!-- ========================= CONNECT MODAL ========================= -->
