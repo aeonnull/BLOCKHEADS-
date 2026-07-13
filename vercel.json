@@ -1,6 +1,8 @@
 {
   "rewrites": [
-    { "source": "/holders", "destination": "/api/holders" }
+    { "source": "/holders",     "destination": "/api/holders" },
+    { "source": "/game",        "destination": "/api/game" },
+    { "source": "/leaderboard", "destination": "/api/leaderboard" }
   ],
   "functions": {
     "api/verify.js": { "maxDuration": 30 }

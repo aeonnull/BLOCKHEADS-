@@ -110,10 +110,12 @@ a:hover{color:var(--warm-white)}
   </div>
 
   <div class="card">
-    <span class="card__tag card__tag--soon">Soon</span>
-    <div class="card__title">Blockheads Runner</div>
-    <p class="card__desc">On-chain arcade runner. Climb the leaderboard, stack blocks. Dropping soon — holders get early access.</p>
-    <span class="card__link card__link--soon">Coming soon <span class="arrow">→</span></span>
+    <span class="card__tag card__tag--live">Live</span>
+    <div class="card__title">Blockrunner</div>
+    <p class="card__desc">Arcade runner. Dodge, jump, shoot — climb the global leaderboard. Holders play unlimited and scores are verified on-chain.</p>
+    <a class="card__link card__link--open" href="/game">
+      Play now <span class="arrow">&#8599;</span>
+    </a>
   </div>
 
 </div>
