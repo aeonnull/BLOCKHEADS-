@@ -101,12 +101,10 @@ a:hover{color:var(--warm-white)}
 <div class="grid">
 
   <div class="card">
-    <span class="card__tag card__tag--live">Live</span>
+    <span class="card__tag card__tag--soon">Soon</span>
     <div class="card__title">nscribed</div>
     <p class="card__desc">One link for everything you’ve inscribed — a profile home for what you make and collect on Bitcoin.</p>
-    <a class="card__link card__link--open" href="${nscribedUrl}" target="_blank" rel="noopener">
-      Go to nscribed <span class="arrow">&#8599;</span>
-    </a>
+    <span class="card__link card__link--soon">Coming soon</span>
   </div>
 
   <div class="card">
