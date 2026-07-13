@@ -104,6 +104,9 @@
     width:240px;max-width:70vw;outline:none;text-transform:uppercase;}
   .nameinp:focus{border-color:var(--orange);}
   .nameinp::placeholder{color:#5a534a;}
+  @keyframes shake{0%,100%{transform:translateX(0)}20%{transform:translateX(-8px)}40%{transform:translateX(8px)}60%{transform:translateX(-6px)}80%{transform:translateX(6px)}}
+  .nameinp--shake{border-color:var(--orange)!important;animation:shake .45s ease;}
+  .nameinp--shake::placeholder{color:var(--orange);}
   .lbwrap{margin-top:16px;width:290px;max-width:82vw;}
   .lbtitle{color:var(--orange);font-size:10px;letter-spacing:.3em;margin-bottom:8px;}
   .lblist{display:flex;flex-direction:column;gap:3px;}
@@ -172,6 +175,7 @@
   </div>
 </div>
 
+<audio id="bgMusic" src="/neonnightchase.mp3" loop preload="auto" style="display:none"></audio>
 <script>
 (() => {
   const wrap=document.getElementById('wrap'), canvas=document.getElementById('c'), ctx=canvas.getContext('2d');
@@ -239,11 +243,11 @@
   // ----- tuning -----
   const GRAV=3000, JUMP_V=-1220, JUMP_CUT=0.60, COYOTE=0.11, BUFFER=0.13;
   const H_STAND=140, H_DUCK=59, P_W=70;            // real sprite (aspect 0.5)
-  const SPD_START=189, SPD_RAMP=2.8, SPD_MAX=610;
+  const SPD_START=189, SPD_RAMP=3.6, SPD_MAX=610;
   const DRONE_ENABLED=true;                        // dronaren: egen level===4-sparr (gatan) + level>=6-sparr (niva 6/7: vattnets surf-svep ar handskriptade, taket anvander samma generella spawn som niva 4)
   // SLUTNIVA-STAD: spelet ar 7 nivaer (1-5 or\u00f6rda, 6=vatten+tak, 7=tak+slutberg+BIP 110-slutboss KLAR enligt order Bip_110.png: laserattacker hog/lag, fyra hammartraffar faller honom). Gammal 8-11-konfig (roof-eskalering/BIP-cykler/hjartan/999999-sentinel) borttagen.
   const LVL_LEN=[0,4500,7500,9000,9000,9000,12000,12500,13000,13500,12000];   // ORDER (10 banor): 7-9 nya eskalerande banor; 10 = gamla finalen (ororda 12000)
-  const LVL_SPD=[0,216,221,232,248,243,265,272,278,283,265];             // ORDER (10 banor): 272/278/283 ligger inom M1-vattnets dokumenterat sakra fartspann 265-283; finalen (10) behaller 265. Bana 1 hojd 205->216 (order: for segt i borjan, svart att komma over hindren) - fortfarande under bana 2:s 221 sa progressionen halls
+  const LVL_SPD=[0,238,252,248,255,250,265,272,278,283,265];             // ORDER (10 banor): 272/278/283 ligger inom M1-vattnets dokumenterat sakra fartspann 265-283; finalen (10) behaller 265. Bana 1 hojd 205->216 (order: for segt i borjan, svart att komma over hindren) - fortfarande under bana 2:s 221 sa progressionen halls
   const LVL_HINT=['','JUMP \u25b2 HOLD=HIGHER  DUCK \u25bc  SHOOT \u2726=ROPES','SHOOT \u2726=ROPES \u00b7 GOLD RUNE = 5 \u20bf, GRAB FAST','NEW: FALLING BLOCKS \u2014 watch the mark','COMBINE.','NEW: SHOOT \u2726 \u2014 cut the ropes','NEW: WATER + CEILING \u2014 surf the blocks, duck the pipes, grab the hammer','STORM \u2014 falling cargo, hunting drone, lightning','NIGHT TIDE \u2014 new waters, new rhythm, no roofs','BLACKOUT \u2014 roofs from step one, waves of dark','FINAL: BIP 110 \u2014 hammer him down, claim EXCALIBUR'];
   const BAR_BOTTOM_OFF=108;
   const ROPE_W=10, ROPE_BOTTOM_OFF=10;
@@ -540,6 +544,14 @@
 
   function start(){ ensureAudio();
     const inp=document.getElementById('nameInput');
+    if(!demo && inp && !inp.value.trim()){
+      inp.classList.remove('nameinp--shake');
+      void inp.offsetWidth;
+      inp.classList.add('nameinp--shake');
+      inp.focus();
+      setTimeout(()=>inp.classList.remove('nameinp--shake'),500);
+      return;
+    }
     playerName = demo ? 'DEMO BOT' : ((inp&&inp.value.trim())? inp.value.trim().toUpperCase().slice(0,12) : 'ANON');
     nameSave(playerName);
     reset(); state='run'; startPanel.classList.add('hidden'); deadPanel.classList.add('hidden');
@@ -3253,7 +3265,6 @@
   }
 })();
 </script>
-<audio id="bgMusic" src="/neonnightchase.mp3" loop preload="auto" style="display:none"></audio>
 <script>
 (function(){
   var p=new URLSearchParams(location.search),g=p.get('guest');
