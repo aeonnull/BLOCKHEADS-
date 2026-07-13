@@ -182,6 +182,15 @@
   }
   .mod--locked{opacity:.62}
   .mod--locked .mod__foot{color:var(--grey)}
+  .mod--featured{
+    border-color:var(--orange);
+    box-shadow:0 0 0 1px var(--orange),0 0 18px rgba(204,64,25,.18);
+    animation:border-pulse 2.8s ease-in-out infinite;
+  }
+  @keyframes border-pulse{
+    0%,100%{box-shadow:0 0 0 1px var(--orange),0 0 18px rgba(204,64,25,.18)}
+    50%{box-shadow:0 0 0 1px var(--orange-lt),0 0 30px rgba(232,99,43,.28)}
+  }
   .lock{color:var(--orange)}
   .mod__open{color:var(--orange-lt)}
 
@@ -392,7 +401,7 @@
         </div>
 
         <!-- HOLDERS : runner (locked — wallet planned) -->
-        <div class="mod mod--locked" role="button" tabindex="0" data-lock="runner">
+        <div class="mod mod--locked mod--featured" role="button" tabindex="0" data-lock="runner">
           <span class="mod__tag mod__tag--lock">Holders</span>
           <h3 class="mod__title">Blockheads Runner</h3>
           <p class="mod__desc">On-chain arcade runner. Climb the leaderboard, stack blocks.</p>
