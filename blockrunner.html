@@ -154,9 +154,9 @@
     <div class="sub">
       <div class="chasebox">
         <div class="chaserow"><svg class="chaseic" viewBox="0 0 14 14"><path fill="#f7a000" d="M8 1 5 1 4 2 3 2 3 4 2 4 2 6 3 6 3 8 4 8 4 6 6 6 6 13 8 13 8 8 10 8 10 10 12 10 12 8 11 8 11 6 12 6 12 3 11 3 11 2 9 2 9 1zM6 3 8 3 8 4 9 4 9 5 6 5z"/></svg><span>SATS &nbsp;=&nbsp; SCORE</span></div>
-        <div class="chaserow"><svg class="chaseic" viewBox="0 0 14 14"><path fill="#e03a3a" d="M2 3 5 3 5 4 6 4 6 5 8 5 8 4 9 4 9 3 12 3 12 4 13 4 13 7 12 7 12 8 11 8 11 9 10 9 10 10 9 10 9 11 8 11 8 12 6 12 6 11 5 11 5 10 4 10 4 9 3 9 3 8 2 8 2 7 1 7 1 4 2 4z"/></svg><span>HEARTS &nbsp;=&nbsp; COLLECT &#8217;EM ALL</span></div>
-        <div class="chaserow"><svg class="chaseic" viewBox="0 0 14 14"><path fill="#ffd24a" d="M4 1 10 1 10 2 11 2 11 12 10 12 10 13 4 13 4 12 3 12 3 2 4 2z"/><path fill="#8a5a00" d="M6 3 8 3 8 5 9 5 9 6 8 6 8 7 9 7 9 9 8 9 8 11 6 11 6 8 7 8 7 7 6 7 6 6 7 6 7 5 6 5z"/></svg><span>GOLD RUNE &nbsp;=&nbsp; +5 &#8383; &nbsp;&#183;&nbsp; GRAB FAST</span></div>
-        <div class="chaserow"><svg class="chaseic" viewBox="0 0 14 14"><path fill="#F85000" d="M7 1 8 1 8 2 9 2 9 3 10 3 10 4 11 4 11 5 12 5 12 6 13 6 13 8 12 8 12 9 11 9 11 10 10 10 10 11 9 11 9 12 8 12 8 13 6 13 6 12 5 12 5 11 4 11 4 10 3 10 3 9 2 9 2 8 1 8 1 6 2 6 2 5 3 5 3 4 4 4 4 3 5 3 5 2 6 2 6 1z"/><path fill="#ffd8a8" d="M6 5 8 5 8 6 9 6 9 8 8 8 8 9 6 9 6 8 5 8 5 6 6 6z"/></svg><span>RARE SAT &nbsp;=&nbsp; +21 &#8383; &nbsp;&#183;&nbsp; 1 PER LEVEL</span></div>
+        <div class="chaserow"><svg class="chaseic" viewBox="0 0 14 14"><path fill="#e03a3a" d="M2 3 5 3 5 4 6 4 6 5 8 5 8 4 9 4 9 3 12 3 12 4 13 4 13 7 12 7 12 8 11 8 11 9 10 9 10 10 9 10 9 11 8 11 8 12 6 12 6 11 5 11 5 10 4 10 4 9 3 9 3 8 2 8 2 7 1 7 1 4 2 4z"/></svg><span>HEARTS &nbsp;=&nbsp; EXTRA LIFE &nbsp;&#183;&nbsp; ONLY 4</span></div>
+        <div class="chaserow"><svg class="chaseic" viewBox="0 0 14 14"><path fill="#ffd24a" d="M4 1 10 1 10 2 11 2 11 12 10 12 10 13 4 13 4 12 3 12 3 2 4 2z"/><path fill="#8a5a00" d="M6 3 8 3 8 5 9 5 9 6 8 6 8 7 9 7 9 9 8 9 8 11 6 11 6 8 7 8 7 7 6 7 6 6 7 6 7 5 6 5z"/></svg><span>SHIELD &nbsp;=&nbsp; BLOCKS 1 HIT &nbsp;&#183;&nbsp; ONLY 5</span></div>
+        <div class="chaserow"><svg class="chaseic" viewBox="0 0 14 14"><path fill="#F85000" d="M7 1 8 1 8 2 9 2 9 3 10 3 10 4 11 4 11 5 12 5 12 6 13 6 13 8 12 8 12 9 11 9 11 10 10 10 10 11 9 11 9 12 8 12 8 13 6 13 6 12 5 12 5 11 4 11 4 10 3 10 3 9 2 9 2 8 1 8 1 6 2 6 2 5 3 5 3 4 4 4 4 3 5 3 5 2 6 2 6 1z"/><path fill="#ffd8a8" d="M6 5 8 5 8 6 9 6 9 8 8 8 8 9 6 9 6 8 5 8 5 6 6 6z"/></svg><span>RARE SAT &nbsp;=&nbsp; +21 &#8383; &nbsp;&#183;&nbsp; ONLY 4</span></div>
       </div>
     </div>
     <input id="nameInput" class="nameinp" maxlength="12" placeholder="YOUR NAME" autocomplete="off" spellcheck="false" />
@@ -228,7 +228,7 @@
   const CHAR_TRAIT = {
     MAGENTA:  { starMargin:26,  starYMult:1.70, heartRadius:0.60 },
     CHARCOAL: { shieldFree:true, bonusMult:0.55 },
-    SWOOSH:   { dodgeChance:0.30, exhaustSec:3.5 },
+    SWOOSH:   { dodgeChance:0.12, exhaustSec:3.5 },
     BTC:      { magnetRadius:170, rangeMult:0.60, starMargin:-18, starYMult:0.55 },
     TETRIS:   { scoreMult:2.0, hitPad:-1 },
     CAMO:     { hitPad:14, airLeniency:36, coinValMult:0.55, rangeMult:0.78, starMargin:-10, starYMult:0.72 }
@@ -248,7 +248,7 @@
   // SLUTNIVA-STAD: spelet ar 7 nivaer (1-5 or\u00f6rda, 6=vatten+tak, 7=tak+slutberg+BIP 110-slutboss KLAR enligt order Bip_110.png: laserattacker hog/lag, fyra hammartraffar faller honom). Gammal 8-11-konfig (roof-eskalering/BIP-cykler/hjartan/999999-sentinel) borttagen.
   const LVL_LEN=[0,4500,7500,9000,9000,9000,12000,12500,13000,13500,12000];   // ORDER (10 banor): 7-9 nya eskalerande banor; 10 = gamla finalen (ororda 12000)
   const LVL_SPD=[0,238,252,248,255,250,265,272,278,283,265];             // ORDER (10 banor): 272/278/283 ligger inom M1-vattnets dokumenterat sakra fartspann 265-283; finalen (10) behaller 265. Bana 1 hojd 205->216 (order: for segt i borjan, svart att komma over hindren) - fortfarande under bana 2:s 221 sa progressionen halls
-  const LVL_HINT=['','JUMP \u25b2 HOLD=HIGHER  DUCK \u25bc  SHOOT \u2726=ROPES','SHOOT \u2726=ROPES \u00b7 GOLD RUNE = 5 \u20bf, GRAB FAST','NEW: FALLING BLOCKS \u2014 watch the mark','COMBINE.','NEW: SHOOT \u2726 \u2014 cut the ropes','NEW: WATER + CEILING \u2014 surf the blocks, duck the pipes, grab the hammer','STORM \u2014 falling cargo, hunting drone, lightning','NIGHT TIDE \u2014 new waters, new rhythm, no roofs','BLACKOUT \u2014 roofs from step one, waves of dark','FINAL: BIP 110 \u2014 hammer him down, claim EXCALIBUR'];
+  const LVL_HINT=['','JUMP \u25b2 HOLD=HIGHER  DUCK \u25bc  SHOOT \u2726=ROPES','SHOOT \u2726=ROPES \u00b7 SHIELDS SIT HIGH \u2014 ONLY 5 PER RUN','NEW: FALLING BLOCKS \u2014 watch the mark','COMBINE.','NEW: SHOOT \u2726 \u2014 cut the ropes','NEW: WATER + CEILING \u2014 surf the blocks, duck the pipes, grab the hammer','STORM \u2014 falling cargo, hunting drone, lightning','NIGHT TIDE \u2014 new waters, new rhythm, no roofs','BLACKOUT \u2014 roofs from step one, waves of dark','FINAL: BIP 110 \u2014 hammer him down, claim EXCALIBUR'];
   const BAR_BOTTOM_OFF=108;
   const ROPE_W=10, ROPE_BOTTOM_OFF=10;
   const HAM_W=46, HAM_AR=0.366, HAM_Y_OFF=250, ZAP_AR=0.799;
@@ -286,13 +286,13 @@
   const COIN_W=56, BTC_AR=2.0, BTCG_AR=1.182;
   const RUNE_AR=0.8125, RUNE_W=29, RUNE_OFF=16, RUNE_BTC=5, RUNE_LIFE=3.4;  // guld-runa pa bergstoppen
   // rare sat (niva 2): silverfargad myntvariant pa ett plattformsblock
-  const SAT_BTC=21, SAT_CHANCE=0.60, SAT_WIN_FROM=3750, SAT_WIN_TO=6500;
-  const SAT_GUARANTEED_LEVELS=[2,3,4,5];   // 100% chans pa dessa nivaer istallet for SAT_CHANCE
+  const SAT_BTC=21, SAT_CHANCE=0, SAT_WIN_FROM=3750, SAT_WIN_TO=6500;   // ORDER v61b: ingen slumpsat
+  const SAT_GUARANTEED_LEVELS=[3,5];   // ORDER v61b: sat ENDAST bana 3+5 (+ de fasta i vattnet bana 6+8) = exakt 4 per run
   const SAT_BLOCK_H=120, SAT_BLOCK_W=110;
   // sat-hojd: fast varde 320 (total 120+320=440 px over marken; onabar fran marken >414, nabar med hopp fran blocket <534, marginal 94)
   const SAT_ABOVE_BLOCK = 320;
   // bana 1: fem beloningsmoment, utspridda over banan (langd 9000), forst efter intromonstret
-  const L1REWARDS=[ {at:1500,k:'coins'}, {at:2100,k:'heart'}, {at:2800,k:'rune'}, {at:3500,k:'heart'}, {at:4100,k:'rune'} ];
+  const L1REWARDS=[ {at:1500,k:'coins'}, {at:2800,k:'rune'}, {at:4100,k:'rune'} ];   // ORDER v61b: INGA hjartan pa bana 1
   // ----- mempool tuning -----
   const TX_W=22, FILL_DIST=1900, TX_FILL=0.07, SURGE_AT=0.80;
   const SURGE_N=4, SURGE_GAP=1.3, FIRST_SURGE_DIST=4500;
@@ -303,13 +303,13 @@
   const BLOCK_START=873421;
 
   let state='start',speed,dist,score,best=0;
-  let playerName='ANON', coins=0, runesGot=0, satsGot=0; const COIN_VAL=25;
+  let playerName='ANON', coins=0, runesGot=0, satsGot=0, shieldsSpawnedRun=0, runesSpawnedRun=0; const COIN_VAL=25;
   let lbFallback=[{n:'MIO',s:1450},{n:'SATOSHI',s:1120},{n:'ORDINAL',s:880},{n:'BLOCK',s:610},{n:'DEGEN',s:420}];
   function esc(t){return String(t).replace(/[<>&]/g,c=>({'<':'&lt;','>':'&gt;','&':'&amp;'}[c]));}
   let player,obstacles,particles,spawnX,bgScroll,shakeT,flashT,coinsArr,coinTimer,lastAction,lastWasRope;
   let stormBoltT=0,stormNextT=3,dark9T=0;
   let l9Lamps=[],l9LampsSpawned=0,l9LampHintT=0,l9Light=0;   // l9Light: 1=nyss tand (ljust) -> avtar mot 0 (morkt)   // bana 9 BLACKOUT: lampor man hoppar upp och tander   // bana 7: blixttimer over hamnen; bana 9: skymningsvagornas fas
-  let coyote,buffer,jumpHeld,ducking,deadCooldown=0,drone=null,droneTimer,landT=0,fireT=0,fireCd=0,hammer=null,hammerTimer,zapT=0,charges=0,swingT=0,swingTarget=null,swingHit=false,demo=false,botHold=0,botShortHop=false,boss=null,bossTimer=24,shieldPick=null,shieldTimer=16,hasShield=false,shieldFlashT=0,gaps=[],zone='street',zoneT=2200,gapX=0,zoneBannerT=0,stars=[],ropeBalls=[],lanterns=[],lanternTimer=2,roofBoss=null,pendingRoofBoss=false,roofVisits=0,level=1,startLevel=1,maxLevel=1,lvlDist=0,lvlBannerT=0,bossDone=false,zoneBlend=0,clearedT=0,plats=[],hearts=[],heartsGot=0,starsThrown=0,platX=0,raisedX=0,roofRuns=0,l1Idx=0,l1RewardIdx=0,l1RewardT=0,heartsSpawned=0,roofRopeTimer=0,roofRuneDone=false,blueBlend=0,fallers=[],fallX=1400,heartLvlDone=false,waterDone=false,hamHintShown=false,hamHintT=0,mtnHintShown=false,mtnHintT=0,rareSatRolled=false,rareSatWillSpawn=false,rareSatSpawned=false,rareSatCollectedThisLevel=false,introBlockSpawned=false,lvlRuneSpawned=false,lvlRuneTriggerAt=0,l3ArcHigh=false,dynamites=[],mtnSpawned=false,mtnTriggerAt=0,rockHintT=0,l5ArcFlat=false,dynAmmo=0,dynPickups=[],dynTeachSpawned=false,dynPreMtnSpawned=false,dynScatterTimer=0,mtn5Destroyed=false,l6WaterTriggered=false,l6WaterSpawnClamped=true,l6Drones=[],l6RoofMode=false,l6RoofBlend=0,roofHintT=0,roofHintShown=false,l9LampHintShown=false,m2LastH=-1,m2HRun=0,m2LastPat=-1,m2PatRun=0,m2DroneBeam=null,l6Deco=[],l6BallTimer=0,lastDeathCause=null,demoInvuln=true,wballLevel=-1,wballsThisLevel=0,bigPropLevel=-1,bigPropCount=0,pipeLevel=-1,pipeCount=0,l7Land=false,l7LandBannerT=0,l7BergTriggerDist=0,l7BergSpawned=false,l7BergDone=false,l7Bip=null,l7BipSpawnT=0,l7BipDone=false,l7HamSpawned=0,l7RoofStarted=false,l7Excal=null,l7ExcalDone=false;
+  let coyote,buffer,jumpHeld,ducking,deadCooldown=0,drone=null,droneTimer,landT=0,fireT=0,fireCd=0,hammer=null,hammerTimer,zapT=0,charges=0,swingT=0,swingTarget=null,swingHit=false,demo=false,botHold=0,botShortHop=false,boss=null,bossTimer=24,shieldPick=null,shieldTimer=16,hasShield=false,shieldFlashT=0,gaps=[],zone='street',zoneT=2200,gapX=0,zoneBannerT=0,stars=[],ropeBalls=[],lanterns=[],lanternTimer=2,roofBoss=null,pendingRoofBoss=false,roofVisits=0,level=1,startLevel=1,maxLevel=1,lvlDist=0,lvlBannerT=0,bossDone=false,zoneBlend=0,clearedT=0,plats=[],hearts=[],heartsGot=0,starsThrown=0,platX=0,raisedX=0,roofRuns=0,l1Idx=0,l1FinIdx=0,l1RewardIdx=0,l1RewardT=0,heartsSpawned=0,roofRopeTimer=0,roofRuneDone=false,blueBlend=0,fallers=[],fallX=1400,heartLvlDone=false,waterDone=false,hamHintShown=false,hamHintT=0,mtnHintShown=false,mtnHintT=0,rareSatRolled=false,rareSatWillSpawn=false,rareSatSpawned=false,rareSatCollectedThisLevel=false,introBlockSpawned=false,lvlRuneSpawned=false,lvlRuneTriggerAt=0,l3ArcHigh=false,dynamites=[],mtnSpawned=false,mtnTriggerAt=0,rockHintT=0,l5ArcFlat=false,dynAmmo=0,dynPickups=[],dynTeachSpawned=false,dynPreMtnSpawned=false,dynScatterTimer=0,mtn5Destroyed=false,l6WaterTriggered=false,l6WaterSpawnClamped=true,l6Drones=[],l6RoofMode=false,l6RoofBlend=0,roofHintT=0,roofHintShown=false,l9LampHintShown=false,m2LastH=-1,m2HRun=0,m2LastPat=-1,m2PatRun=0,m2DroneBeam=null,l6Deco=[],l6BallTimer=0,lastDeathCause=null,demoInvuln=true,wballLevel=-1,wballsThisLevel=0,bigPropLevel=-1,bigPropCount=0,pipeLevel=-1,pipeCount=0,l7Land=false,l7LandBannerT=0,l7BergTriggerDist=0,l7BergSpawned=false,l7BergDone=false,l7Bip=null,l7BipSpawnT=0,l7BipDone=false,l7HamSpawned=0,l7RoofStarted=false,l7Excal=null,l7ExcalDone=false;
   let igrace=0,exhaustedT=0;
   let bonus=0,blockHeight,blockFill,chain,surge,txArr,txTimer,confirmMsgT,txPops;
 
@@ -326,13 +326,13 @@
     introBlockSpawned=false; lvlRuneSpawned=false; l3ArcHigh=false; lvlRuneTriggerAt=LVL_LEN[Math.min(level,10)]*((level===6||level===8)?(0.60+Math.random()*0.12):(0.30+Math.random()*0.45));   // niva 6/7: senare fonster (60-72%) sa runan garanterat spawnar EFTER M1:s vatten - botens "clearAhead"-plock kraver att INGA vattengap finns kvar nagonstans i banan, och skulle annars aldrig hinna nappa den korta livstiden (RUNE_LIFE) medan M1 fortfarande pagar
     mtnSpawned=false; mtn5Destroyed=false; mtnTriggerAt=LVL_LEN[Math.min(level,10)]*(0.85+Math.random()*0.03); rockHintT=0; l5ArcFlat=false;
     l7Land=false; l7LandBannerT=0; l7BergTriggerDist=0; l7BergSpawned=false; l7BergDone=false; l7Bip=null; l7BipSpawnT=0; l7BipDone=false; l7HamSpawned=0; l7RoofStarted=false; l7Excal=null; l7ExcalDone=false; stormBoltT=0; stormNextT=2.5+Math.random()*3; dark9T=0; l9Lamps=[]; l9LampsSpawned=0; l9LampHintT=0; l9Light=0;
-    plats=[]; hearts=[]; platX=W+600; raisedX=W+900; l1Idx=0; l1RewardIdx=0; l1RewardT=0; heartsSpawned=0; roofRopeTimer=6; roofRuneDone=false; fallers=[]; fallX=1400; dynamites=[];
+    plats=[]; hearts=[]; platX=W+600; raisedX=W+900; l1Idx=0; l1FinIdx=0; l1RewardIdx=0; l1RewardT=0; heartsSpawned=0; roofRopeTimer=6; roofRuneDone=false; fallers=[]; fallX=1400; dynamites=[];
     l6WaterTriggered=false; l6WaterSpawnClamped=true; l6Drones=[]; l6RoofMode=false; l6RoofBlend=0; roofHintT=0; roofHintShown=false; m2LastH=-1; m2HRun=0; m2LastPat=-1; m2PatRun=0; m2DroneBeam=null; l6Deco=[]; l6BallTimer=5;
     if(zone==='roof')roofRuns++; fireT=0; fireCd=0; hammer=null; hammerTimer=14; zapT=0; charges=0; swingT=0; swingTarget=null; swingHit=false;
-    coinsArr=[]; coinTimer=2.0; coins=0; runesGot=0; satsGot=0;
+    coinsArr=[]; coinTimer=2.0; coins=0; runesGot=0; satsGot=0; shieldsSpawnedRun=0; runesSpawnedRun=0;   // ORDER v61d: max 5 skoldar + max 2 runor per HEL run
     bonus=0; blockHeight=BLOCK_START; blockFill=0.40; chain=[]; surge=null; txArr=[]; txTimer=2.2; confirmMsgT=0; txPops=[];
     igrace=0; exhaustedT=0; lastDeathCause=null;
-    if(trait().shieldFree) hasShield=true;   // CHARCOAL starts every level shielded
+    if(trait().shieldFree && level<=3) hasShield=true;   // CHARCOAL starts every level shielded
     dynReset();
   }
   function curH(){ return ducking && player.onGround ? H_DUCK : H_STAND; }
@@ -582,7 +582,7 @@
     l6WaterTriggered=false; l6WaterSpawnClamped=true; l6Drones=[]; l6RoofMode=false; l6RoofBlend=0; roofHintT=0; roofHintShown=false; m2LastH=-1; m2HRun=0; m2LastPat=-1; m2PatRun=0; m2DroneBeam=null; l6Deco=[]; l6BallTimer=5;
     if(level===5) charges=0;   // niva 5: dynamit ersatter hammar-svepet, ingen kvarhangande charge ska kunna trigga det gamla svepet
     igrace=0; exhaustedT=0; lastDeathCause=null;
-    if(trait().shieldFree) hasShield=true;   // CHARCOAL is re-shielded on each new level
+    if(trait().shieldFree && level<=3) hasShield=true;   // CHARCOAL is re-shielded on each new level
     dynReset();
     // RIKTAD RENSNING vid nivaovergang: allt langt fram (>player.x+260) tillhorde forra nivans regler/rytm och
     // skulle annars slapa in i den nya nivan (t.ex. niva 2:s hinder/mynt in i niva 3) och ge synlig "darrning" de
@@ -610,13 +610,13 @@
     introBlockSpawned=false; lvlRuneSpawned=false; l3ArcHigh=false; lvlRuneTriggerAt=LVL_LEN[Math.min(level,10)]*((level===6||level===8)?(0.60+Math.random()*0.12):(0.30+Math.random()*0.45));   // niva 6/7: senare fonster (60-72%) sa runan garanterat spawnar EFTER M1:s vatten - botens "clearAhead"-plock kraver att INGA vattengap finns kvar nagonstans i banan, och skulle annars aldrig hinna nappa den korta livstiden (RUNE_LIFE) medan M1 fortfarande pagar
     mtnSpawned=false; mtn5Destroyed=false; mtnTriggerAt=LVL_LEN[Math.min(level,10)]*(0.85+Math.random()*0.03); rockHintT=0; l5ArcFlat=false;
     l7Land=false; l7LandBannerT=0; l7BergTriggerDist=0; l7BergSpawned=false; l7BergDone=false; l7Bip=null; l7BipSpawnT=0; l7BipDone=false; l7HamSpawned=0; l7RoofStarted=false; l7Excal=null; l7ExcalDone=false; stormBoltT=0; stormNextT=2.5+Math.random()*3; dark9T=0; l9Lamps=[]; l9LampsSpawned=0; l9LampHintT=0; l9Light=0;
-    plats=[]; hearts=[]; platX=W+600; raisedX=W+900; l1Idx=0; l1RewardIdx=0; l1RewardT=0; heartsSpawned=0; roofRopeTimer=6; roofRuneDone=false; fallers=[]; fallX=1400; dynamites=[];
+    plats=[]; hearts=[]; platX=W+600; raisedX=W+900; l1Idx=0; l1FinIdx=0; l1RewardIdx=0; l1RewardT=0; heartsSpawned=0; roofRopeTimer=6; roofRuneDone=false; fallers=[]; fallX=1400; dynamites=[];
     l6WaterTriggered=false; l6WaterSpawnClamped=true; l6Drones=[]; l6RoofMode=false; l6RoofBlend=0; roofHintT=0; roofHintShown=false; m2LastH=-1; m2HRun=0; m2LastPat=-1; m2PatRun=0; m2DroneBeam=null; l6Deco=[]; l6BallTimer=5;
     if(zone==='roof')roofRuns++; fireT=0; fireCd=0; hammer=null; hammerTimer=14; zapT=0; charges=0; swingT=0; swingTarget=null; swingHit=false;
     coinsArr=[]; coinTimer=2.0;
     surge=null;
     igrace=0; exhaustedT=0; lastDeathCause=null;
-    if(trait().shieldFree) hasShield=true;
+    if(trait().shieldFree && level<=3) hasShield=true;
     dynReset();
     state='run';
   }
@@ -631,14 +631,14 @@
     if(!unblockable){
       const _dT=trait();
       // CHARCOAL / shield pickup: absorb one hit for free, keep running
-      if(hasShield){ hasShield=false; shieldFlashT=0.5; igrace=0.9;
+      if(hasShield){ hasShield=false; shieldFlashT=0.5; igrace=0.5;
         shakeT=Math.max(shakeT,0.24); flashT=Math.max(flashT,0.10);
         const bx=player.x+P_W+16, by=player.y-curH()*0.6;
         for(let i=0;i<18;i++)particles.push({x:bx,y:by,vx:Math.random()*300+60,vy:(Math.random()-0.5)*360,life:0.35+Math.random()*0.3,c:Math.random()<0.5?'#7de8ff':'#ffffff',s:3+Math.random()*4});
         return; }
       // SWOOSH: random chance to phase through the hit, then a few seconds "exhausted"
       if((_dT.dodgeChance||0)>0 && Math.random()<_dT.dodgeChance){
-        igrace=0.9; exhaustedT=_dT.exhaustSec||3.5; shieldFlashT=0.3;
+        igrace=0.5; exhaustedT=_dT.exhaustSec||3.5; shieldFlashT=0.3;
         shakeT=Math.max(shakeT,0.14);
         const cx=player.x+P_W/2, cy=player.y-curH()*0.55;
         for(let i=0;i<22;i++)particles.push({x:cx,y:cy,vx:(Math.random()-0.5)*420,vy:(Math.random()-0.7)*360,life:0.4+Math.random()*0.35,c:Math.random()<0.5?'#b6f36a':'#ffffff',s:3+Math.random()*4});
@@ -753,6 +753,16 @@
       else { obstacles.push({type:'air',x:spawnX,bottom:GROUND_Y-170,w:52,h:240}); }
       spawnX+=30+gap; l1Idx++; lastAction='jump'; return;
     }
+    // ---------- L1-FINAL (ORDER v61b): SLUTET av bana 1 - tre brandposter i rad + dubbelhopp over tva hoga torn.
+    // Triggas forst vid 72% av banan sa borjan forblir snall; fasta gap = alltid samma larbara rytm. ----------
+    if(level===1 && l1FinIdx<5 && lvlDist>LVL_LEN[1]*0.72){
+      const FIN=[['hyd',430],['hyd',430],['hyd',480],['g3',235],['g3',520]];
+      const [fk,fgap]=FIN[l1FinIdx];
+      if(fk==='hyd'){ const fh=84, fw=fh*CITY_SPR.hydrant.aspect;
+        obstacles.push({type:'ground',x:spawnX,y:GROUND_Y,w:fw,h:fh,prop:'hydrant'}); spawnX+=fw+fgap; }
+      else { obstacles.push({type:'ground',x:spawnX,y:GROUND_Y,w:30,h:70}); spawnX+=30+fgap; }
+      l1FinIdx++; lastAction='jump'; lastWasRope=false; return;
+    }
     // ---------- SPAWN-SKYDD MOT PLATTFORMAR (t.ex. sat-blocket): galler ALLA hindertyper ----------
     for(const p of plats){ if(spawnX>p.x-400 && spawnX<p.x+p.w+400){ spawnX=p.x+p.w+400; } }
     // ---------- BAKAT-SKYDD (niva 3): flytta HELA obstakel-spawnen (enstaka + kombon) forbi ett aktivt fallande blocks x-bana ----------
@@ -781,7 +791,7 @@
       }
     }
     // ---------- KOMBOBIBLIOTEK (niva 2-5, samt 6-7 taket): tre handdesignade monster; niva 3 glesare (0.22), niva 4 annu glesare (0.16), niva 5 egen (0.19), niva 6/7 tat rytm for taksektionen (0.28) ----------
-    if((level===2||level===3||level===4||level===5||level>=6) && Math.random()<(level===3?0.22:level===4?0.16:level===5?0.19:level>=6?Math.min(0.34,0.28+(Math.min(level,9)-6)*0.02):0.33)){
+    if((level===2||level===3||level===4||level===5||level>=6) && Math.random()<(level===3?0.26:level===4?0.20:level===5?0.24:level>=6?Math.min(0.34,0.28+(Math.min(level,9)-6)*0.02):0.36)){
       const ct=Math.min(1,(speed-SPD_START)/300);
       const tMinGap=Math.max(380-ct*40, speed*0.82+80), tMaxGap=tMinGap+150+ct*60;
       const tailGap=tMinGap+Math.random()*(tMaxGap-tMinGap);
@@ -851,7 +861,7 @@
         obstacles.push({type:'ground',x:spawnX,y:GROUND_Y,w:bw,h});
         spawnX+=bw+gap;
       } else {
-        const h=28+t*24+Math.random()*(6+t*14);                        // bana 1: oforandrat
+        const h=28+t*24+Math.random()*(6+t*14);                        // bana 1: oforandrat (ORDER v61b: hojningen ATERSTALLD - utmaningen ligger i L1-finalen, inte i borjan)
         let bw=28+t*18+Math.random()*(6+t*16);
         const clearW=Math.max(34, speed*0.60 - P_W - 14);              // aldrig bredare an ett lagfarts-hopp klarar
         if(bw>clearW) bw=clearW;
@@ -872,10 +882,10 @@
         let highArc=false, flatRow=false;
         if(level===3||level===4){ l3ArcHigh=!l3ArcHigh; highArc=l3ArcHigh; }   // niva 3/4: varannan bage hog -> kraver hopp
         if(level===5){ l5ArcFlat=!l5ArcFlat; flatRow=l5ArcFlat; }              // niva 5: varannan lag rak rad (transportbandskansla) istallet for bage
-        const base=highArc?190:70;                                  // hog: andmynt Hc=190 (>166 standrackvidd), topp Hc=320 (<414 hopprackvidd, marginal 94); lag: som niva 2 (topp 200)
+        const base=240;   /* ORDER v61c: bas 240 - mynt kraver ORDENTLIGT hopp, inte smaskutt */                                  // hog: andmynt Hc=190 (>166 standrackvidd), topp Hc=320 (<414 hopprackvidd, marginal 94); lag: som niva 2 (topp 200)
         for(let i=0;i<n;i++){
           const tt=n>1?i/(n-1):0.5;
-          const ay=flatRow ? GROUND_Y-70 : GROUND_Y-(base+130*Math.sin(Math.PI*tt));
+          const ay=flatRow ? GROUND_Y-250 : GROUND_Y-(base+130*Math.sin(Math.PI*tt));
           coinsArr.push({x:arcFrom+step*i,y:ay,bob:i*0.4,got:false});
         }
       }
@@ -941,7 +951,7 @@
     // gles myntbage pa ett plant takhinder-parti (aldrig vid glapp/klippa/duck sa inget plock-hopp krockar)
     if(f===2 && Math.random()<0.3){ const arcFrom=spawnX-buf()*0.4-40, arcTo=spawnX-60;
       if(arcTo>arcFrom+80){ const n=3+Math.floor(Math.random()*2), step=(arcTo-arcFrom)/Math.max(1,n-1);
-        for(let i=0;i<n;i++){ const tt=n>1?i/(n-1):0.5; coinsArr.push({x:arcFrom+step*i,y:GROUND_Y-(90+120*Math.sin(Math.PI*tt)),bob:i*0.4,got:false}); } } }
+        for(let i=0;i<n;i++){ const tt=n>1?i/(n-1):0.5; coinsArr.push({x:arcFrom+step*i,y:GROUND_Y-(240+120*Math.sin(Math.PI*tt)),bob:i*0.4,got:false}); } } }
   }
   function spawnDrone(beamY){ if(!DRONE_ENABLED)return; drone={x:W+80,y:GROUND_Y-260,phase:'in',t:0,bob:0,beamY:beamY!=null?beamY:(GROUND_Y-BAR_BOTTOM_OFF)};
     obstacles=obstacles.filter(o=>!(o.type==='ground'||o.type==='air'||o.type==='rope')||o.x<player.x-60); }   // niva 4/6: rensa koade hinder framfor spelaren -> attacken far garanterat fri mark under hela sin livscykel. beamY: valfri override (niva 6:s surf-svep anvander en LAG strale - se M1 - som tvingar hopp istallet for duck)
@@ -1095,7 +1105,6 @@
       if(platX<W+240 && !gaps.some(g=>g.x>W-100&&g.x<W+700) && !plats.some(p=>p.roof && p.x+p.w>W-160)){
         const bx=W+260;
         plats.push({x:bx,top:GROUND_Y-115,w:126},{x:bx+196,top:GROUND_Y-205,w:112});
-        hearts.push({x:bx+240,y:GROUND_Y-286,bob:Math.random()*6,got:false}); heartsSpawned++;
         platX=1900+Math.random()*800;
       } }
     // ---------- RAISED ROOFTOP STRETCH (recurring elevation change in the running surface) ----------
@@ -1117,9 +1126,11 @@
         obstacles.push({type:'rope',x:W+120,w:ROPE_W,cut:false,fallY:0,fallV:0,cutY:0});
         roofRopeTimer=5.5+Math.random()*3.5; }
       // en rune per takniva, ungefar mitt i banan, som bel"oning nar man skjutit repet
-      if(!roofRuneDone && lvlDist>2600 && clearSpot){
-        coinsArr.push({x:W+80,y:GROUND_Y-150,bob:0,got:false,rune:true,life:RUNE_LIFE});
-        roofRuneDone=true; }
+      if(!roofRuneDone && lvlDist>2600 && clearSpot && shieldsSpawnedRun<5){
+        const rrBx=W+120;
+        plats.push({x:rrBx,top:GROUND_Y-SAT_BLOCK_H,w:SAT_BLOCK_W});
+        coinsArr.push({x:rrBx+SAT_BLOCK_W/2+100,y:GROUND_Y-(SAT_BLOCK_H+SAT_ABOVE_BLOCK),bob:0,got:false,shield:true}); shieldsSpawnedRun++;
+        roofRuneDone=true; }   // ORDER v61d: SKOLD pa sat-block, max 5/run
     }
     for(const p of plats)p.x-=speed*dt;
     plats=plats.filter(p=>p.x+p.w>-60);
@@ -1201,7 +1212,7 @@
       // (hopp S4->fastland: 130 - langst bort fran alla hazard-triggers)
       // ORDER 5: INGA dronare pa niva 6/7 (varken M1 eller M2). Surfen ar ren hoppning mellan blocken.
       const bankX=surfX+SURF_GW;                                  // ---------- KORT MYNTPAUS mellan M1 (vatten) och M2 (tak): lugn strackning med en myntbage innan taksektionens rytm tar vid ----------
-      for(let i=0;i<5;i++) coinsArr.push({x:bankX+120+i*66,y:GROUND_Y-(90+70*Math.sin(Math.PI*i/4)),bob:i*0.4,got:false});
+      for(let i=0;i<5;i++) coinsArr.push({x:bankX+120+i*66,y:GROUND_Y-(240+70*Math.sin(Math.PI*i/4)),bob:i*0.4,got:false});
     }
 
     // ---------- NIVA 8 NIGHT TIDE: HELT NY handskriven vattenbana. Annan rytm an bana 6: ----------
@@ -1223,7 +1234,7 @@
       coinsArr.push({x:surfA+165+100,y:SB8-170,bob:0,got:false});                   // hog belONing over SURF A-block 1
       coinsArr.push({x:surfA+530+100,y:SB8-170,bob:0,got:false});                   // hog belONing over SURF A-block 2
       const isle=surfA+SURF_A;                                  // TORR O (420px) med myntbage - andningspaus mitt i tidvattnet
-      for(let i=0;i<5;i++) coinsArr.push({x:isle+90+i*60,y:GROUND_Y-(88+64*Math.sin(Math.PI*i/4)),bob:i*0.4,got:false});
+      for(let i=0;i<5;i++) coinsArr.push({x:isle+90+i*60,y:GROUND_Y-(240+64*Math.sin(Math.PI*i/4)),bob:i*0.4,got:false});
       const surfB=isle+420, SURF_B=1320;                        // SURF B: 3 stora block (200/200/260), 165 hopp, slutblock med RARE SAT
       gaps.push({x:surfB,w:SURF_B,water:true});
       plats.push({x:surfB+165, top:SB8, w:200, stone:true, pipe:true, pvar:0, bare:true});
@@ -1233,12 +1244,14 @@
       coinsArr.push({x:surfB+165+100,y:SB8-170,bob:0,got:false});                   // hog belONing over SURF B-block 1
       coinsArr.push({x:surfB+530+100,y:SB8-170,bob:0,got:false});                   // hog belONing over SURF B-block 2
       const bank8=surfB+SURF_B;
-      for(let i=0;i<5;i++) coinsArr.push({x:bank8+120+i*66,y:GROUND_Y-(90+70*Math.sin(Math.PI*i/4)),bob:i*0.4,got:false});
+      for(let i=0;i<5;i++) coinsArr.push({x:bank8+120+i*66,y:GROUND_Y-(240+70*Math.sin(Math.PI*i/4)),bob:i*0.4,got:false});
     }
     // ---------- M2: TAK — garanterad runa (ateranvander niva 2-4:s mekanik, se ovan), hammare + mtn-klippor (level>=6, se spawnGround/hammerTimer) tar vid automatiskt nar vattnet ar korsat (waterOn blir false) ----------
     // ---------- STREET HEART ----------
-    if(level>=2 && zone==='street' && !heartLvlDone && lvlDist>LVL_LEN[Math.min(level,10)]*0.55){
-      heartLvlDone=true; hearts.push({x:W+80,y:GROUND_Y-232,bob:0,got:false}); }
+    if((level===3||level===5||level===7||level===9) && zone==='street' && !heartLvlDone && lvlDist>LVL_LEN[Math.min(level,10)]*0.55){   // ORDER v61b: 4 hjartan per run, ett pa var av 3,5,7,9
+      heartLvlDone=true; const hBx=W+120;
+      plats.push({x:hBx,top:GROUND_Y-SAT_BLOCK_H,w:SAT_BLOCK_W});
+      hearts.push({x:hBx+SAT_BLOCK_W/2+100,y:GROUND_Y-(SAT_BLOCK_H+SAT_ABOVE_BLOCK),bob:0,got:false}); }   // ORDER v61c: SAT-UPPLAGG - hoppblock + hjarta 440 upp, onaabart fran marken
     // ---------- RARE SAT (niva 2-5): max 1/niva; niva 2-5 garanterad (SAT_GUARANTEED_LEVELS); hoppblock + sat utom rackhall fran marken ----------
     if((level===2||level===3||level===4||level===5) && zone==='street' && !rareSatSpawned){
       if(!rareSatRolled && lvlDist>SAT_WIN_FROM){ rareSatRolled=true; rareSatWillSpawn=SAT_GUARANTEED_LEVELS.includes(level)?true:Math.random()<SAT_CHANCE; }
@@ -1267,10 +1280,11 @@
         const lrClear = !obstacles.some(o=>Math.abs(o.x-lrBx)<lrSafeGap)
           && !gaps.some(g=>lrBx>g.x-60 && lrBx<g.x+g.w+60)
           && !plats.some(p=>lrBx>p.x-70 && lrBx<p.x+p.w+70);
-        if(lrClear){
-          coinsArr.push({x:lrBx,y:GROUND_Y-150,bob:0,got:false,rune:true,life:RUNE_LIFE});
+        if(lrClear && shieldsSpawnedRun<5){
+          plats.push({x:lrBx,top:GROUND_Y-SAT_BLOCK_H,w:SAT_BLOCK_W});
+          coinsArr.push({x:lrBx+SAT_BLOCK_W/2+100,y:GROUND_Y-(SAT_BLOCK_H+SAT_ABOVE_BLOCK),bob:0,got:false,shield:true}); shieldsSpawnedRun++;
           lvlRuneSpawned=true;
-        }
+        } else if(!lrClear){} else { lvlRuneSpawned=true; }   // ORDER v61d: SKOLD pa sat-block, max 5/run
       }
     }
     // ---------- DYNAMIT-PICKUPS SPAWN (endast niva 5) ----------
@@ -1366,7 +1380,7 @@
     if(player.y>H+60){die('pit');return;}
     updateMempool(dt);
     document.getElementById('scoreVal').textContent=score;
-    document.getElementById('coinVal').textContent='\u20BF '+coins+'  R'+runesGot+'  S'+satsGot;
+    document.getElementById('coinVal').textContent='\u20BF '+coins+'  S'+satsGot+(hasShield?'  \u26E8':'');
 
     if(buffer>0)buffer-=dt;
     if(player.onGround)coyote=COYOTE; else if(coyote>0)coyote-=dt;
@@ -1576,7 +1590,7 @@
         for(let i=0;i<30;i++)particles.push({x:mx,y:mtop+10,vx:(Math.random()-0.5)*470,vy:-Math.random()*430,life:0.4+Math.random()*0.4,c:Math.random()<0.5?'#8a8a8a':(Math.random()<0.5?'#9fe8ff':'#ffd24a'),s:4+Math.random()*5});
         if(o.hp<=0){ shakeT=Math.max(shakeT,0.36); bonus+=20; swingTarget=null; if(o.endBerg)l7BergDone=true;
           for(let i=0;i<42;i++)particles.push({x:mx,y:GROUND_Y-30,vx:(Math.random()-0.5)*540,vy:-Math.random()*540,life:0.5+Math.random()*0.5,c:Math.random()<0.6?'#6e6e6e':'#4a4a4a',s:5+Math.random()*6});
-          if(!o.runeGot){ o.runeGot=true; coinsArr.push({x:mx,y:GROUND_Y-150,bob:0,got:false,rune:true,life:RUNE_LIFE});
+          if(!o.runeGot){ o.runeGot=true; if(runesSpawnedRun<2){ runesSpawnedRun++; coinsArr.push({x:mx,y:GROUND_Y-320,bob:0,got:false,rune:true,life:RUNE_LIFE}); }   // ORDER v61d: runan FORTJANAS (hammare/dynamit pa berget), max 2/run, hoppas upp till
             for(let i=0;i<22;i++)particles.push({x:mx,y:GROUND_Y-110,vx:(Math.random()-0.5)*360,vy:-Math.random()*420-80,life:0.4+Math.random()*0.4,c:Math.random()<0.6?'#f7a000':'#ffe08a',s:3+Math.random()*4}); } }
       }
     }
@@ -1603,7 +1617,7 @@
               if(hitObs.hp<=0){ bonus+=20;
                 if(hitObs.endBerg) mtn5Destroyed=true;   // bestandig flagga - level-gaten (se ovan) beror INTE pa att objektet fortfarande finns kvar i obstacles-arrayen
                 for(let i=0;i<42;i++)particles.push({x:mx,y:GROUND_Y-30,vx:(Math.random()-0.5)*540,vy:-Math.random()*540,life:0.5+Math.random()*0.5,c:Math.random()<0.6?'#6e6e6e':'#4a4a4a',s:5+Math.random()*6});
-                if(!hitObs.runeGot){ hitObs.runeGot=true; coinsArr.push({x:mx,y:GROUND_Y-150,bob:0,got:false,rune:true,life:RUNE_LIFE});
+                if(!hitObs.runeGot){ hitObs.runeGot=true; if(runesSpawnedRun<2){ runesSpawnedRun++; coinsArr.push({x:mx,y:GROUND_Y-320,bob:0,got:false,rune:true,life:RUNE_LIFE}); }   // ORDER v61d: runan FORTJANAS (hammare/dynamit pa berget), max 2/run, hoppas upp till
                   for(let i=0;i<22;i++)particles.push({x:mx,y:GROUND_Y-110,vx:(Math.random()-0.5)*360,vy:-Math.random()*420-80,life:0.4+Math.random()*0.4,c:Math.random()<0.6?'#f7a000':'#ffe08a',s:3+Math.random()*4}); }
               }
             } else if(hitObs.crate){
@@ -1616,24 +1630,28 @@
     }
     dynamites=dynamites.filter(d=> d.state==='fly' || d.boomT<BOOM_T);
     coinTimer-=dt;
-    if(coinTimer<=0){ coinsArr.push({x:W+40,y:GROUND_Y-(80+Math.random()*210),bob:Math.random()*6,got:false});
+    if(coinTimer<=0){ coinsArr.push({x:W+40,y:GROUND_Y-(level===1?80+Math.random()*130:240+Math.random()*100),bob:Math.random()*6,got:false});
       coinTimer=(level===1?3.0:1.5)+Math.random()*2.3; }
     // bana 1: fem utplacerade beloningar sa banan inte blir tom, forst efter intromonstret
     if(level===1){ l1RewardT-=dt;
       if(l1RewardIdx<L1REWARDS.length && lvlDist>L1REWARDS[l1RewardIdx].at && l1RewardT<=0){
         const rw=L1REWARDS[l1RewardIdx];
         if(rw.k==='heart'){ hearts.push({x:W+80,y:GROUND_Y-232,bob:0,got:false}); }
-        else if(rw.k==='rune'){ coinsArr.push({x:W+60,y:GROUND_Y-150,bob:0,got:false,rune:true,life:RUNE_LIFE}); }
-        else { for(let i=0;i<5;i++)coinsArr.push({x:W+60+i*64,y:GROUND_Y-(150+Math.sin(i)*40),bob:i*0.5,got:false}); }
+        else if(rw.k==='rune' && shieldsSpawnedRun<5){ const r1Bx=W+120;
+          plats.push({x:r1Bx,top:GROUND_Y-SAT_BLOCK_H,w:SAT_BLOCK_W});
+          coinsArr.push({x:r1Bx+SAT_BLOCK_W/2+100,y:GROUND_Y-(SAT_BLOCK_H+SAT_ABOVE_BLOCK),bob:0,got:false,shield:true}); shieldsSpawnedRun++; }   // ORDER v61d: SKOLD pa sat-block
+        else { for(let i=0;i<5;i++)coinsArr.push({x:W+60+i*64,y:GROUND_Y-(260+Math.sin(i)*40),bob:i*0.5,got:false}); }
         l1RewardIdx++; l1RewardT=1.2; } }
     const _cT=trait(), _cMag=_cT.magnetRadius||0, _cEx=exhaustedT>0;
     for(const cn of coinsArr){ cn.x-=speed*dt; cn.bob+=dt; if(cn.rune)cn.life-=dt;
       if(_cMag>0 && !cn.got){ const dx=(player.x+P_W/2)-cn.x, dy=(player.y-curH()*0.5)-cn.y, d=Math.hypot(dx,dy);
         if(d<_cMag && d>2){ const pull=Math.min(1,(_cMag-d)/_cMag)*420*dt; cn.x+=dx/d*pull; cn.y+=dy/d*pull; } }
-      if(!cn.got && !_cEx){ const ph2=curH(), gx=cn.rune?34:30, gy=cn.rune?34:26, cy=cn.y+Math.sin(cn.bob*4)*6;
+      if(!cn.got && !_cEx){ const ph2=curH(), gx=(cn.rune||cn.shield)?34:30, gy=(cn.rune||cn.shield)?34:26, cy=cn.y+Math.sin(cn.bob*4)*6;
         if(player.x<cn.x+gx && player.x+P_W>cn.x-gx && player.y-ph2<cy+gy && player.y>cy-gy){
           cn.got=true;
-          if(cn.rune){ coins+=RUNE_BTC; runesGot++; coinSfx(); flashT=Math.max(flashT,0.10); shakeT=Math.max(shakeT,0.16);
+          if(cn.shield){ hasShield=true; shieldFlashT=0.5; coinSfx(); flashT=Math.max(flashT,0.10);
+            popText(cn.x,cy-30,'SHIELD','#7de8ff'); cn.got=true; continue; }
+          if(cn.rune){ coins+=RUNE_BTC; coinSfx();   // ORDER v61d: runa = POANG, fortjanad via hammare/dynamit. Skyddsfunktionen bor i skoldarna. flashT=Math.max(flashT,0.10); shakeT=Math.max(shakeT,0.16);
             popText(cn.x,cy-30,'+'+RUNE_BTC+' \u20BF','#ffd24a');
             for(let i=0;i<30;i++)particles.push({x:cn.x,y:cy,vx:(Math.random()-0.5)*440,vy:-Math.random()*400,life:0.45+Math.random()*0.45,c:Math.random()<0.6?'#f7a000':'#ffe08a',s:4+Math.random()*5}); }
           else if(cn.sat){ coins+=SAT_BTC; satsGot++; rareSatCollectedThisLevel=true; coinSfx(); flashT=Math.max(flashT,0.10); shakeT=Math.max(shakeT,0.16);
@@ -2770,6 +2788,7 @@
     const cw=COIN_W, ch=cw/BTC_AR;
     ctx.imageSmoothingEnabled=false;
     for(const cn of coinsArr){ if(cn.got)continue; const cy=cn.y+Math.sin(cn.bob*4)*6;
+      if(cn.shield){ drawShieldIcon(cn.x, cy, 40, false); continue; }
       if(cn.rune){ const rw=RUNE_W, rh=rw/RUNE_AR;
         ctx.save(); ctx.globalAlpha=0.20+0.16*Math.abs(Math.sin(cn.bob*6)); ctx.fillStyle='#ffd24a';
         ctx.beginPath(); ctx.arc(cn.x,cy,rw*0.78,0,Math.PI*2); ctx.fill(); ctx.restore();
@@ -3110,7 +3129,7 @@
     ctx.fillStyle=ORANGE; ctx.font='700 13px monospace';
     ctx.fillText('NEXT: '+LVL_HINT[Math.min(level+1,10)], W/2, H*0.50);
     if(level===2){ ctx.fillStyle='#8f93b8'; ctx.font='700 11px monospace';
-      ctx.fillText('₿ '+coins+'   R '+runesGot+'   RARE SAT: '+(rareSatCollectedThisLevel?'FOUND':'MISSED'), W/2, H*0.555); }
+      ctx.fillText('₿ '+coins+'   RARE SAT: '+(rareSatCollectedThisLevel?'FOUND':'MISSED'), W/2, H*0.555); }
     if(clearedT>0.6&&(Math.floor(clearedT*2)%2===0)){ ctx.fillStyle='#8f93b8'; ctx.font='700 12px monospace';
       ctx.fillText('TAP FOR NEXT BLOCK', W/2, H*0.58); }
   }
