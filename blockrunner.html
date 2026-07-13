@@ -337,6 +337,7 @@
 
   // ---------- AUDIO: faint chiptune of "Korobeiniki" (1861 folk tune, public domain) ----------
   let audioCtx=null, master=null, musicOn=true, noteIdx=0, nextT=0, schedStarted=false;
+  const bgMusic=document.getElementById('bgMusic');
   const MUSIC_VOL=0.06, BEAT=0.30;
   const N={A4:440,B4:493.88,C5:523.25,D5:587.33,E5:659.25,F5:698.46,G5:783.99,A5:880,R:0};
   const SONG=[
@@ -358,29 +359,13 @@
         // iOS unlock: play one silent sample inside the gesture
         const buf=audioCtx.createBuffer(1,1,22050);
         const src=audioCtx.createBufferSource(); src.buffer=buf; src.connect(audioCtx.destination); src.start(0);
-        nextT=audioCtx.currentTime+0.15;
-        if(!schedStarted){ setInterval(scheduler,60); schedStarted=true; }
+        bgMusic.volume=0.35; if(musicOn) bgMusic.play().catch(function(){});
       }catch(e){ audioCtx=null; return; }
     }
     if(audioCtx.state==='suspended') audioCtx.resume();
   }
-  function playNote(freq,t,dur){
-    if(freq<=0||!musicOn) return;
-    const o=audioCtx.createOscillator(), g=audioCtx.createGain();
-    o.type='square'; o.frequency.value=freq;
-    g.gain.setValueAtTime(0.0001,t);
-    g.gain.linearRampToValueAtTime(MUSIC_VOL,t+0.015);
-    g.gain.exponentialRampToValueAtTime(0.0001,t+dur*0.9);
-    o.connect(g); g.connect(master); o.start(t); o.stop(t+dur+0.02);
-  }
-  function scheduler(){
-    if(!audioCtx||audioCtx.state!=='running') return;
-    if(nextT < audioCtx.currentTime) nextT=audioCtx.currentTime+0.05;
-    while(nextT < audioCtx.currentTime+0.2){
-      const [f,b]=SONG[noteIdx]; const dur=b*BEAT;
-      playNote(f,nextT,dur); nextT+=dur; noteIdx=(noteIdx+1)%SONG.length;
-    }
-  }
+  function playNote(freq,t,dur){}
+  function scheduler(){}
   function zapSfx(){ if(!audioCtx)return; const t0=audioCtx.currentTime, out=master||audioCtx.destination;
     [740,1100,1480,1760].forEach((fr,i)=>{ const o=audioCtx.createOscillator(),g=audioCtx.createGain();
       o.type='square'; o.frequency.setValueAtTime(fr,t0+i*0.045);
@@ -408,6 +393,21 @@
       const o2=audioCtx.createOscillator(),g2=audioCtx.createGain(); o2.type='sine'; o2.frequency.setValueAtTime(3400,t0+0.28); o2.frequency.exponentialRampToValueAtTime(2200,t0+0.80);
       g2.gain.setValueAtTime(0.0001,t0+0.26); g2.gain.linearRampToValueAtTime(0.16,t0+0.34); g2.gain.exponentialRampToValueAtTime(0.0001,t0+0.80);
       o2.connect(g2); g2.connect(out); o2.start(t0+0.26); o2.stop(t0+0.82);
+    }catch(e){} }
+  function thunderSfx(){ if(!audioCtx)return; const t0=audioCtx.currentTime,out=master||audioCtx.destination;
+    try{
+      const cLen=Math.floor(audioCtx.sampleRate*0.09),cBuf=audioCtx.createBuffer(1,cLen,audioCtx.sampleRate),cd=cBuf.getChannelData(0);
+      for(let i=0;i<cLen;i++) cd[i]=Math.random()*2-1;
+      const cr=audioCtx.createBufferSource(); cr.buffer=cBuf;
+      const cf=audioCtx.createBiquadFilter(); cf.type='bandpass'; cf.frequency.value=900; cf.Q.value=0.5;
+      const cg=audioCtx.createGain(); cg.gain.setValueAtTime(0.30,t0); cg.gain.exponentialRampToValueAtTime(0.001,t0+0.09);
+      cr.connect(cf); cf.connect(cg); cg.connect(out); cr.start(t0); cr.stop(t0+0.10);
+      const rLen=Math.floor(audioCtx.sampleRate*2.2),rBuf=audioCtx.createBuffer(1,rLen,audioCtx.sampleRate),rd=rBuf.getChannelData(0);
+      for(let i=0;i<rLen;i++) rd[i]=Math.random()*2-1;
+      const ru=audioCtx.createBufferSource(); ru.buffer=rBuf;
+      const lp=audioCtx.createBiquadFilter(); lp.type='lowpass'; lp.frequency.setValueAtTime(100,t0+0.06); lp.frequency.exponentialRampToValueAtTime(35,t0+2.2);
+      const rg=audioCtx.createGain(); rg.gain.setValueAtTime(0.001,t0); rg.gain.linearRampToValueAtTime(0.26,t0+0.08); rg.gain.exponentialRampToValueAtTime(0.001,t0+2.2);
+      ru.connect(lp); lp.connect(rg); rg.connect(out); ru.start(t0+0.03); ru.stop(t0+2.3);
     }catch(e){} }
   function nameSave(nm){ try{ if(window.storage) window.storage.set('bh:name',nm,false); }catch(e){} }
   function lbUpsert(arr,nm,sc){   // ORDER (walletverifiering forberedd): EN rad per namn - nytt resultat UPPDATERAR radens poang om det ar battre, annars behalls basta. Samma spelare kan alltsa aldrig fylla listan med dubbletter, och poangen "fastnar" pa kontot/namnet.
@@ -445,7 +445,7 @@
   // unlock on ANY first tap, capture phase
   window.addEventListener('pointerdown',ensureAudio,{capture:true});
   const musicBtn=document.getElementById('musicBtn');
-  musicBtn.addEventListener('pointerdown',e=>{e.stopPropagation();musicOn=!musicOn;musicBtn.classList.toggle('on',musicOn);ensureAudio();});
+  musicBtn.addEventListener('pointerdown',e=>{e.stopPropagation();musicOn=!musicOn;musicBtn.classList.toggle('on',musicOn);if(musicOn){ensureAudio();bgMusic.play().catch(()=>{});}else{bgMusic.pause();}});
 
   // ---------- mobil: stoppa långtrycks-meny, markering & pinch (men låt namn-fältet vara) ----------
   function isField(t){ return t && (t.tagName==='INPUT'||t.tagName==='TEXTAREA'); }
@@ -943,7 +943,7 @@
     if(deadCooldown>0)deadCooldown-=dt;
     if(shakeT>0)shakeT-=dt;
     if(flashT>0)flashT-=dt;
-    if(level===7){ stormNextT-=dt; if(stormNextT<=0){ stormBoltT=0.22; stormNextT=2.5+Math.random()*4.5; } if(stormBoltT>0)stormBoltT-=dt; }
+    if(level===7){ stormNextT-=dt; if(stormNextT<=0){ stormBoltT=0.22; thunderSfx(); stormNextT=2.5+Math.random()*4.5; } if(stormBoltT>0)stormBoltT-=dt; }
     if(level===9||level===7||level===8){ dark9T+=dt;                     // ORDER: lampor AVEN pa bana 7 (STORM) - bonuslampor i regnet + forhandslektion infor bana 9:s morker
       // INTRO-LARLAMPA (order, ENDAST niva 9): star tand redan fran start, flimrar till och SLOCKNAR -> morkret faller.
       // Spelaren ser lampa=ljus-kopplingen innan mekaniken kravs.
@@ -3253,6 +3253,7 @@
   }
 })();
 </script>
+<audio id="bgMusic" src="/neonnightchase.mp3" loop preload="auto" style="display:none"></audio>
 <script>
 (function(){
   var p=new URLSearchParams(location.search),g=p.get('guest');
