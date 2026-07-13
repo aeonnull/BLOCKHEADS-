@@ -397,6 +397,18 @@
       o.frequency.setValueAtTime(fr,t0+i*0.06); g.gain.setValueAtTime(0.0001,t0+i*0.06);
       g.gain.linearRampToValueAtTime(0.09,t0+i*0.06+0.01); g.gain.exponentialRampToValueAtTime(0.0001,t0+i*0.06+0.12);
       o.connect(g); g.connect(out); o.start(t0+i*0.06); o.stop(t0+i*0.06+0.14); }); }
+  function swordDrawSfx(){ if(!audioCtx)return; const t0=audioCtx.currentTime,out=master||audioCtx.destination;
+    try{
+      const bLen=Math.floor(audioCtx.sampleRate*0.42),buf=audioCtx.createBuffer(1,bLen,audioCtx.sampleRate),d=buf.getChannelData(0);
+      for(let i=0;i<bLen;i++) d[i]=Math.random()*2-1;
+      const ns=audioCtx.createBufferSource(); ns.buffer=buf;
+      const bp=audioCtx.createBiquadFilter(); bp.type='bandpass'; bp.frequency.setValueAtTime(180,t0); bp.frequency.exponentialRampToValueAtTime(5200,t0+0.36); bp.Q.value=7;
+      const gn=audioCtx.createGain(); gn.gain.setValueAtTime(0.0001,t0); gn.gain.linearRampToValueAtTime(0.22,t0+0.04); gn.gain.linearRampToValueAtTime(0.14,t0+0.30); gn.gain.linearRampToValueAtTime(0.0001,t0+0.42);
+      ns.connect(bp); bp.connect(gn); gn.connect(out); ns.start(t0); ns.stop(t0+0.44);
+      const o2=audioCtx.createOscillator(),g2=audioCtx.createGain(); o2.type='sine'; o2.frequency.setValueAtTime(3400,t0+0.28); o2.frequency.exponentialRampToValueAtTime(2200,t0+0.80);
+      g2.gain.setValueAtTime(0.0001,t0+0.26); g2.gain.linearRampToValueAtTime(0.16,t0+0.34); g2.gain.exponentialRampToValueAtTime(0.0001,t0+0.80);
+      o2.connect(g2); g2.connect(out); o2.start(t0+0.26); o2.stop(t0+0.82);
+    }catch(e){} }
   function nameSave(nm){ try{ if(window.storage) window.storage.set('bh:name',nm,false); }catch(e){} }
   function lbUpsert(arr,nm,sc){   // ORDER (walletverifiering forberedd): EN rad per namn - nytt resultat UPPDATERAR radens poang om det ar battre, annars behalls basta. Samma spelare kan alltsa aldrig fylla listan med dubbletter, och poangen "fastnar" pa kontot/namnet.
     const ix=arr.findIndex(e=>e.n===nm);
@@ -922,7 +934,7 @@
   function spawnDrone(beamY){ if(!DRONE_ENABLED)return; drone={x:W+80,y:GROUND_Y-260,phase:'in',t:0,bob:0,beamY:beamY!=null?beamY:(GROUND_Y-BAR_BOTTOM_OFF)};
     obstacles=obstacles.filter(o=>!(o.type==='ground'||o.type==='air'||o.type==='rope')||o.x<player.x-60); }   // niva 4/6: rensa koade hinder framfor spelaren -> attacken far garanterat fri mark under hela sin livscykel. beamY: valfri override (niva 6:s surf-svep anvander en LAG strale - se M1 - som tvingar hopp istallet for duck)
 
-  function excalStrike(){ if(!l7Excal||l7Excal.struck)return; l7Excal.struck=true; l7Excal.t=0;
+  function excalStrike(){ if(!l7Excal||l7Excal.struck)return; l7Excal.struck=true; l7Excal.t=0; swordDrawSfx();
     shakeT=Math.max(shakeT,0.5); flashT=Math.max(flashT,0.2); bonus+=250*bmult();
     popText(l7Excal.x,GROUND_Y-170,'EXCALIBUR!','#f7a000');
     for(let i=0;i<26;i++)particles.push({x:l7Excal.x,y:GROUND_Y-90,vx:(Math.random()-0.5)*420,vy:-Math.random()*380,life:0.5+Math.random()*0.4,c:Math.random()<0.5?'#f7a000':'#fff2d0',s:3+Math.random()*3}); }
@@ -1516,7 +1528,7 @@
       if(pxx<hx+hw && pxx+P_W>hx && pyy<hy+hh && pyy+ph>hy){
         charges=1; zapT=0.7; flashT=Math.max(flashT,0.13); shakeT=Math.max(shakeT,0.2);
         for(let i=0;i<28;i++)particles.push({x:hx+hw/2,y:hy+hh/2,vx:(Math.random()-0.5)*440,vy:(Math.random()-0.5)*440,life:0.4+Math.random()*0.35,c:Math.random()<0.4?'#9fe8ff':(Math.random()<0.5?'#b6f36a':'#ffffff'),s:4+Math.random()*5});
-        zapSfx(); hammer=null; hammerTimer=(level===10&&(l6RoofMode||l7Land)&&(l7HamSpawned<9||l7Land))?(4+Math.random()*3):(16+Math.random()*9);
+        swordDrawSfx(); hammer=null; hammerTimer=(level===10&&(l6RoofMode||l7Land)&&(l7HamSpawned<9||l7Land))?(4+Math.random()*3):(16+Math.random()*9);
       } else if(hammer.x<-90){ hammer=null; hammerTimer=(level===10&&(l6RoofMode||l7Land)&&(l7HamSpawned<9||l7Land))?(3+Math.random()*3):(11+Math.random()*8); }   // ORDER (Bip_110.png): 9-taket galler INTE fran l7Land (slutstriden: berg 3 hp + BIP 4 hp) - takstrackan ater ofta upp taket LANGT innan finalen, och bade berget och bossen kraver garanterat snabbfl\u00f6de (empiriskt: bot fastnade 40s+ vid berget med chg=0 och dog sen i vaggen vid BIP hp4)
     } else {
       hammerTimer-=dt;
