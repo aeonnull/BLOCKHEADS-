@@ -1309,7 +1309,8 @@
         const bx=W+60; if(dpClear(bx) && dpClear(bx+90)){
           dynPickups.push({x:bx,y:dpY,bob:0,got:false});
           dynPickups.push({x:bx+90,y:dpY,bob:0.5,got:false});
-          dynPreMtnSpawned=true; }
+          dynPreMtnSpawned=true;
+        } else if(lvlDist>mtnTriggerAt-50){ dynPreMtnSpawned=true; } // safety: unblock mountain if pair never fit
       }
       // 3) UTSPRIDDA EXTRA-PICKUPS langs banan
       dynScatterTimer-=dt;
