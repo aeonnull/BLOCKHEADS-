@@ -162,6 +162,7 @@
     <input id="nameInput" class="nameinp" maxlength="12" placeholder="YOUR NAME" autocomplete="off" spellcheck="false" />
     <div class="charlbl">CHOOSE YOUR BLOCKHEAD</div>
     <div id="charSelect" class="charsel"></div>
+    <div class="lbwrap"><div class="lbtitle">TOP RUNNERS</div><div id="startLbList" class="lblist"></div></div>
     <button class="cta" id="startBtn">TAP TO START</button>
     <button class="cta2" id="demoBtn">&#9655; WATCH DEMO</button>
   </div>
@@ -421,10 +422,11 @@
     arr.sort((a,b)=>b.s-a.s); return arr.slice(0,10);
   }
   function renderLB(list,myName,myScore){
-    const el=document.getElementById('lbList'); if(!el)return; let marked=false;
-    el.innerHTML = (list.length? list.map((e,i)=>{ const me=(!marked&&e.n===myName); if(me)marked=true;   // markera via NAMN (raden kan visa ett tidigare, hogre rekord an just denna run)
+    const html = list.length? list.map((e,i)=>{
+      const me = myName && e.n===myName;
       return `<div class="lbrow${me?' me':''}"><span class="nm">${i+1}. ${esc(e.n)}</span><span class="sc">${e.s}</span></div>`;
-    }).join('') : '<div class="lbrow"><span class="nm">No runs yet</span><span class="sc"></span></div>');
+    }).join('') : '<div class="lbrow"><span class="nm">No runs yet</span><span class="sc"></span></div>';
+    ['lbList','startLbList'].forEach(id=>{ const el=document.getElementById(id); if(el) el.innerHTML=html; });
   }
   async function submitLB(nm,sc){
     try{ if(window.parent && window.parent!==window) window.parent.postMessage({type:'BLOCKHEADS_SCORE',name:nm,score:sc},'*'); }catch(e){}
@@ -3199,6 +3201,7 @@
     const rc=await window.storage.get('bh:char',false);
     if(rc&&rc.value){ const i=Math.max(0,Math.min(CHARS.length-1,parseInt(rc.value,10)||0)); selChar=i; buildCharSelect(); } } }catch(e){} })();
   requestAnimationFrame(frame);
+  fetch('/api/leaderboard').then(r=>r.ok?r.json():null).then(d=>{ if(d&&d.leaderboard) renderLB(d.leaderboard,'',''); }).catch(()=>{});
 
   // ---------- TESTLÄGE (förhandsgranska händelser utan att spela dit) ----------
   (function(){
